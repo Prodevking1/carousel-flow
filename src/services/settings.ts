@@ -17,35 +17,32 @@ export async function getUserSettings(userId: string): Promise<UserSettings | nu
 }
 
 export async function getOrCreateUserSettings(userId: string): Promise<UserSettings> {
-  let settings = await getUserSettings(userId);
+  const { data, error } = await supabase
+    .from('user_settings')
+    .upsert({
+      user_id: userId,
+      primary_color: '#0A66C2',
+      show_signature: false,
+      signature_name: '',
+      design_template: 'template1',
+      end_page_title: 'Your Name',
+      end_page_subtitle: 'Follow me for more content',
+      end_page_cta: 'Follow for more content',
+      end_page_contact: '',
+      end_page_image: ''
+    }, {
+      onConflict: 'user_id',
+      ignoreDuplicates: false
+    })
+    .select()
+    .single();
 
-  if (!settings) {
-    const { data, error } = await supabase
-      .from('user_settings')
-      .insert({
-        user_id: userId,
-        primary_color: '#0A66C2',
-        show_signature: false,
-        signature_name: '',
-        design_template: 'template1',
-        end_page_title: 'Your Name',
-        end_page_subtitle: 'Follow me for more content',
-        end_page_cta: 'Follow for more content',
-        end_page_contact: '',
-        end_page_image: ''
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error creating user settings:', error);
-      throw error;
-    }
-
-    settings = data;
+  if (error) {
+    console.error('Error creating user settings:', error);
+    throw error;
   }
 
-  return settings;
+  return data;
 }
 
 export async function updateUserSettings(
