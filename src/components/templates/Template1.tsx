@@ -66,7 +66,7 @@ export function Template1Content({ slide, totalSlides, settings }: TemplateProps
 
         {slide.content && (
           <div className="mb-6">
-            <p className="text-2xl text-gray-700 leading-relaxed whitespace-pre-line">
+            <p className="text-2xl text-gray-700 leading-loose whitespace-pre-line [&>br]:mb-4">
               {parseMarkdown(slide.content)}
             </p>
           </div>
@@ -79,7 +79,7 @@ export function Template1Content({ slide, totalSlides, settings }: TemplateProps
                 <div className="text-3xl font-bold" style={{ color: primaryColor }}>
                   →
                 </div>
-                <p className="text-2xl text-gray-700 leading-relaxed flex-1">{parseMarkdown(bullet)}</p>
+                <p className="text-2xl text-gray-700 leading-loose flex-1">{parseMarkdown(bullet)}</p>
               </div>
             ))}
           </div>
@@ -107,7 +107,7 @@ export function Template1CTA({ slide, settings }: TemplateProps) {
             {slide.bullets.map((bullet, index) => (
               <div key={index} className="flex items-start gap-4">
                 <div className="text-2xl font-bold" style={{ color: settings.primary_color }}>→</div>
-                <p className="text-xl text-gray-700 leading-relaxed">{parseMarkdown(bullet)}</p>
+                <p className="text-xl text-gray-700 leading-loose">{parseMarkdown(bullet)}</p>
               </div>
             ))}
           </div>
