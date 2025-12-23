@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowLeft, ChevronDown } from 'lucide-react';
 import { CarouselLanguage, SlideCount, ContentFormat, ContentLength } from '../types/carousel';
 
 export default function Generate() {
@@ -14,6 +14,7 @@ export default function Generate() {
   const [contentFormat, setContentFormat] = useState<ContentFormat>('paragraph');
   const [contentLength, setContentLength] = useState<ContentLength>('auto');
   const [error, setError] = useState('');
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const languages = [
     { value: 'fr', label: 'Français', flag: '🇫🇷' },
@@ -145,135 +146,152 @@ export default function Generate() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                Content length
-              </label>
-              <div className="grid grid-cols-4 gap-3">
-                <button
-                  onClick={() => setContentLength('short')}
-                  className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                    contentLength === 'short'
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Short
-                </button>
-                <button
-                  onClick={() => setContentLength('medium')}
-                  className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                    contentLength === 'medium'
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Medium
-                </button>
-                <button
-                  onClick={() => setContentLength('long')}
-                  className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                    contentLength === 'long'
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Long
-                </button>
-                <button
-                  onClick={() => setContentLength('auto')}
-                  className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                    contentLength === 'auto'
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Auto
-                </button>
-              </div>
-            </div>
+            <div className="border-t border-gray-200 pt-6">
+              <button
+                onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                <ChevronDown
+                  size={20}
+                  className={`transform transition-transform ${showAdvancedSettings ? 'rotate-180' : ''}`}
+                />
+                View more settings
+              </button>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                Language
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.value}
-                    onClick={() => setLanguage(lang.value as CarouselLanguage)}
-                    className={`py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                      language === lang.value
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    <span className="text-xl">{lang.flag}</span>
-                    <span>{lang.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+              {showAdvancedSettings && (
+                <div className="mt-6 space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Content length
+                    </label>
+                    <div className="grid grid-cols-4 gap-3">
+                      <button
+                        onClick={() => setContentLength('short')}
+                        className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          contentLength === 'short'
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Short
+                      </button>
+                      <button
+                        onClick={() => setContentLength('medium')}
+                        className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          contentLength === 'medium'
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Medium
+                      </button>
+                      <button
+                        onClick={() => setContentLength('long')}
+                        className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          contentLength === 'long'
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Long
+                      </button>
+                      <button
+                        onClick={() => setContentLength('auto')}
+                        className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          contentLength === 'auto'
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Auto
+                      </button>
+                    </div>
+                  </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                Number of slides
-              </label>
-              <div className="grid grid-cols-5 gap-3">
-                {[5, 10, 15].map((count) => (
-                  <button
-                    key={count}
-                    onClick={() => handleSlideCountClick(count)}
-                    className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                      slideCount === count && slideMode === 'fixed'
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {count}
-                  </button>
-                ))}
-                <button
-                  onClick={handleAutoClick}
-                  className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                    slideMode === 'auto'
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Auto
-                </button>
-                <button
-                  onClick={handleCustomClick}
-                  className={`py-3 px-4 rounded-lg font-semibold transition-all ${
-                    slideMode === 'custom'
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Custom
-                </button>
-              </div>
-              {slideMode === 'custom' && (
-                <div className="mt-3">
-                  <input
-                    type="number"
-                    min="3"
-                    max="20"
-                    value={customSlideCount}
-                    onChange={(e) => setCustomSlideCount(e.target.value)}
-                    placeholder="Enter number (3-20)"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                  />
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Language
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {languages.map((lang) => (
+                        <button
+                          key={lang.value}
+                          onClick={() => setLanguage(lang.value as CarouselLanguage)}
+                          className={`py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+                            language === lang.value
+                              ? 'bg-primary text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          <span className="text-xl">{lang.flag}</span>
+                          <span>{lang.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Number of slides
+                    </label>
+                    <div className="grid grid-cols-5 gap-3">
+                      {[5, 10, 15].map((count) => (
+                        <button
+                          key={count}
+                          onClick={() => handleSlideCountClick(count)}
+                          className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                            slideCount === count && slideMode === 'fixed'
+                              ? 'bg-primary text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {count}
+                        </button>
+                      ))}
+                      <button
+                        onClick={handleAutoClick}
+                        className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          slideMode === 'auto'
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Auto
+                      </button>
+                      <button
+                        onClick={handleCustomClick}
+                        className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          slideMode === 'custom'
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Custom
+                      </button>
+                    </div>
+                    {slideMode === 'custom' && (
+                      <div className="mt-3">
+                        <input
+                          type="number"
+                          min="3"
+                          max="20"
+                          value={customSlideCount}
+                          onChange={(e) => setCustomSlideCount(e.target.value)}
+                          placeholder="Enter number (3-20)"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                        />
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-2">
+                      {slideMode === 'auto'
+                        ? 'AI will determine the optimal number of slides'
+                        : slideMode === 'custom'
+                        ? 'Enter a custom number between 3 and 20'
+                        : `Fixed ${slideCount}-slide carousel`}
+                    </p>
+                  </div>
                 </div>
               )}
-              <p className="text-xs text-gray-500 mt-2">
-                {slideMode === 'auto'
-                  ? 'AI will determine the optimal number of slides'
-                  : slideMode === 'custom'
-                  ? 'Enter a custom number between 3 and 20'
-                  : `Fixed ${slideCount}-slide carousel`}
-              </p>
             </div>
 
             <button
