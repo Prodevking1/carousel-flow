@@ -11,12 +11,21 @@ interface TemplateProps {
 export function Template2Cover({ slide, settings }: TemplateProps) {
   return (
     <div className="w-full aspect-square relative overflow-hidden bg-white">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, ${settings.primary_color}10 0%, ${settings.primary_color}05 50%, white 100%)`
+        }}
+      />
       <div className="absolute inset-0 flex flex-col items-center justify-center p-16">
-        <h1 className="text-5xl font-extrabold text-gray-900 text-center mb-6 leading-tight">
+        <h1
+          className="text-5xl font-extrabold text-center mb-6 leading-tight"
+          style={{ color: settings.primary_color }}
+        >
           {slide.title}
         </h1>
         {slide.subtitle && (
-          <p className="text-2xl text-gray-600 text-center leading-snug mb-8">
+          <p className="text-2xl text-gray-700 text-center leading-snug mb-8">
             {slide.subtitle}
           </p>
         )}
@@ -108,6 +117,12 @@ export function Template2CTA({ slide, settings }: TemplateProps) {
 export function Template2End({ settings }: { settings: UserSettings }) {
   return (
     <div className="w-full aspect-square relative overflow-hidden bg-white">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, white 0%, ${settings.primary_color}05 50%, ${settings.primary_color}10 100%)`
+        }}
+      />
       <div className="absolute inset-0 flex flex-col items-center justify-center p-16 text-center">
         {settings.end_page_image && (
           <div className="mb-8">
@@ -119,10 +134,13 @@ export function Template2End({ settings }: { settings: UserSettings }) {
             />
           </div>
         )}
-        <h2 className="text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+        <h2
+          className="text-5xl font-extrabold mb-4 leading-tight"
+          style={{ color: settings.primary_color }}
+        >
           {settings.end_page_title}
         </h2>
-        <p className="text-2xl text-gray-600 mb-6 max-w-xl">
+        <p className="text-2xl text-gray-700 mb-6 max-w-xl">
           {settings.end_page_subtitle}
         </p>
         {settings.end_page_contact && (
