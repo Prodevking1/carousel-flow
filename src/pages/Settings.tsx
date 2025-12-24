@@ -126,28 +126,28 @@ export default function Settings() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Brand Color</h2>
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={formData.primary_color}
-                onChange={(e) => updateColor(e.target.value.toUpperCase())}
-                placeholder="#0A66C2"
-                maxLength={7}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 font-mono text-sm"
-              />
-              <input
-                type="color"
-                value={formData.primary_color}
-                onChange={(e) => setFormData({ ...formData, primary_color: e.target.value.toUpperCase() })}
-                className="w-14 h-12 rounded-lg border border-gray-300 cursor-pointer"
-              />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-2">Design Preferences</h2>
             <p className="text-sm text-gray-600 mb-6">Customize the layout and style of your carousel slides</p>
+
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Brand Color</h3>
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={formData.primary_color}
+                  onChange={(e) => updateColor(e.target.value.toUpperCase())}
+                  placeholder="#0A66C2"
+                  maxLength={7}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 font-mono text-sm"
+                />
+                <input
+                  type="color"
+                  value={formData.primary_color}
+                  onChange={(e) => setFormData({ ...formData, primary_color: e.target.value.toUpperCase() })}
+                  className="w-14 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                />
+              </div>
+            </div>
 
             <div className="grid grid-cols-3 gap-4">
               <PreviewCard
