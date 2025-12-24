@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft, ChevronDown } from 'lucide-react';
 import { CarouselLanguage, SlideCount, ContentFormat, ContentLength } from '../types/carousel';
 import { CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
-import { DesignPreview } from '../components/DesignPreview';
 import { getOrCreateUserSettings } from '../services/settings';
 import { getCurrentUserId } from '../services/user';
+import { CustomizeModal } from '../components/CustomizeModal';
+import { PreviewCard } from '../components/PreviewCard';
 
 export default function Generate() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Generate() {
   const [showSlideNumbers, setShowSlideNumbers] = useState(true);
   const [contentAlignment, setContentAlignment] = useState<ContentAlignment>('centered');
   const [primaryColor, setPrimaryColor] = useState('#0A66C2');
+  const [customizeModalOpen, setCustomizeModalOpen] = useState<'cover' | 'content' | 'end' | null>(null);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -320,121 +322,66 @@ export default function Generate() {
                   </div>
 
                   <div className="border-t border-gray-200 pt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Design Preferences</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Design Preferences</h3>
+                    <p className="text-sm text-gray-600 mb-4">Customize how your carousel will look</p>
 
-                    <div className="space-y-6">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-3">
-                          Cover Page Layout
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <DesignPreview
-                            type="cover"
-                            variant="centered"
-                            selected={coverAlignment === 'centered'}
-                            onClick={() => setCoverAlignment('centered')}
-                            label="Centered"
-                            primaryColor={primaryColor}
-                          />
-                          <DesignPreview
-                            type="cover"
-                            variant="start"
-                            selected={coverAlignment === 'start'}
-                            onClick={() => setCoverAlignment('start')}
-                            label="Left aligned"
-                            primaryColor={primaryColor}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-3">
-                          Signature Position
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <DesignPreview
-                            type="cover"
-                            variant="bottom-right"
-                            selected={signaturePosition === 'bottom-right'}
-                            onClick={() => setSignaturePosition('bottom-right')}
-                            label="Bottom right"
-                            primaryColor={primaryColor}
-                          />
-                          <DesignPreview
-                            type="cover"
-                            variant="bottom-left"
-                            selected={signaturePosition === 'bottom-left'}
-                            onClick={() => setSignaturePosition('bottom-left')}
-                            label="Bottom left"
-                            primaryColor={primaryColor}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-3">
-                          Content Slides Style
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <DesignPreview
-                            type="content"
-                            variant="split"
-                            selected={contentStyle === 'split'}
-                            onClick={() => setContentStyle('split')}
-                            label="Split (Title + Content)"
-                            primaryColor={primaryColor}
-                          />
-                          <DesignPreview
-                            type="content"
-                            variant="combined"
-                            selected={contentStyle === 'combined'}
-                            onClick={() => setContentStyle('combined')}
-                            label="Combined"
-                            primaryColor={primaryColor}
-                          />
-                        </div>
-
-                        {contentStyle === 'split' && (
-                          <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                            <input
-                              type="checkbox"
-                              id="showSlideNumbers"
-                              checked={showSlideNumbers}
-                              onChange={(e) => setShowSlideNumbers(e.target.checked)}
-                              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                            />
-                            <label htmlFor="showSlideNumbers" className="text-sm text-gray-700">
-                              Show slide numbers on title slides
-                            </label>
+                    <div className="grid grid-cols-3 gap-4">
+                      <PreviewCard
+                        title="Cover"
+                        description="First page design"
+                        preview={
+                          <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
+                            <div className={`w-3/4 h-3 rounded mb-2 ${coverAlignment === 'start' ? 'mr-auto' : 'mx-auto'}`} style={{ backgroundColor: primaryColor }} />
+                            <div className={`w-1/2 h-2 bg-gray-400 rounded ${coverAlignment === 'start' ? 'mr-auto' : 'mx-auto'}`} />
+                            {signaturePosition && (
+                              <div className={`absolute bottom-4 ${signaturePosition === 'bottom-right' ? 'right-4' : 'left-4'} w-6 h-1.5 bg-gray-500 rounded`} />
+                            )}
                           </div>
-                        )}
+                        }
+                        onCustomize={() => setCustomizeModalOpen('cover')}
+                      />
 
-                        {contentStyle === 'combined' && (
-                          <div className="mt-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Content alignment
-                            </label>
-                            <div className="grid grid-cols-2 gap-4">
-                              <DesignPreview
-                                type="content"
-                                variant="centered"
-                                selected={contentAlignment === 'centered'}
-                                onClick={() => setContentAlignment('centered')}
-                                label="Centered"
-                                primaryColor={primaryColor}
-                              />
-                              <DesignPreview
-                                type="content"
-                                variant="start"
-                                selected={contentAlignment === 'start'}
-                                onClick={() => setContentAlignment('start')}
-                                label="Left aligned"
-                                primaryColor={primaryColor}
-                              />
+                      <PreviewCard
+                        title="Content"
+                        description="Main slides style"
+                        preview={
+                          contentStyle === 'split' ? (
+                            <div className="absolute inset-0 flex flex-col gap-2 p-4">
+                              <div className="flex-1 bg-white rounded flex items-center justify-center">
+                                <div className="w-2/3 h-3 rounded" style={{ backgroundColor: primaryColor }} />
+                              </div>
+                              <div className="flex-1 bg-white rounded flex flex-col justify-center px-3 gap-1">
+                                <div className="w-full h-1.5 bg-gray-400 rounded" />
+                                <div className="w-4/5 h-1.5 bg-gray-400 rounded" />
+                                <div className="w-full h-1.5 bg-gray-400 rounded" />
+                              </div>
                             </div>
+                          ) : (
+                            <div className="absolute inset-0 flex flex-col justify-center p-4 gap-2">
+                              <div className={`h-3 rounded ${contentAlignment === 'start' ? 'w-2/3' : 'w-2/3 mx-auto'}`} style={{ backgroundColor: primaryColor }} />
+                              <div className="space-y-1">
+                                <div className={`h-1.5 bg-gray-400 rounded ${contentAlignment === 'start' ? 'w-full' : 'w-full mx-auto'}`} />
+                                <div className={`h-1.5 bg-gray-400 rounded ${contentAlignment === 'start' ? 'w-4/5' : 'w-4/5 mx-auto'}`} />
+                                <div className={`h-1.5 bg-gray-400 rounded ${contentAlignment === 'start' ? 'w-full' : 'w-full mx-auto'}`} />
+                              </div>
+                            </div>
+                          )
+                        }
+                        onCustomize={() => setCustomizeModalOpen('content')}
+                      />
+
+                      <PreviewCard
+                        title="End Page"
+                        description="Last page design"
+                        preview={
+                          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 gap-2">
+                            <div className="w-12 h-12 rounded-full" style={{ backgroundColor: primaryColor, opacity: 0.3 }} />
+                            <div className="w-2/3 h-3 rounded" style={{ backgroundColor: primaryColor }} />
+                            <div className="w-1/2 h-2 bg-gray-400 rounded" />
                           </div>
-                        )}
-                      </div>
+                        }
+                        onCustomize={() => navigate('/settings')}
+                      />
                     </div>
                   </div>
                 </div>
@@ -452,6 +399,23 @@ export default function Generate() {
           </div>
         </div>
       </div>
+
+      <CustomizeModal
+        isOpen={customizeModalOpen !== null}
+        onClose={() => setCustomizeModalOpen(null)}
+        type={customizeModalOpen || 'cover'}
+        coverAlignment={coverAlignment}
+        signaturePosition={signaturePosition}
+        contentStyle={contentStyle}
+        showSlideNumbers={showSlideNumbers}
+        contentAlignment={contentAlignment}
+        primaryColor={primaryColor}
+        onUpdateCoverAlignment={setCoverAlignment}
+        onUpdateSignaturePosition={setSignaturePosition}
+        onUpdateContentStyle={setContentStyle}
+        onUpdateShowSlideNumbers={setShowSlideNumbers}
+        onUpdateContentAlignment={setContentAlignment}
+      />
     </div>
   );
 }

@@ -4,7 +4,8 @@ import { ArrowLeft, Save, Loader2, Check } from 'lucide-react';
 import { getOrCreateUserSettings, updateUserSettings } from '../services/settings';
 import { SettingsFormData, DesignTemplate, CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
 import { getCurrentUserId } from '../services/user';
-import { DesignPreview } from '../components/DesignPreview';
+import { CustomizeModal } from '../components/CustomizeModal';
+import { PreviewCard } from '../components/PreviewCard';
 
 const PRESET_COLORS = [
   '#0A66C2', '#4ECDC4', '#45B7D1', '#F7B731', '#5F27CD',
@@ -28,6 +29,7 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [previewTab, setPreviewTab] = useState<'cover' | 'content' | 'end'>('cover');
   const [expandedTemplate, setExpandedTemplate] = useState<DesignTemplate | null>('template1');
+  const [customizeModalOpen, setCustomizeModalOpen] = useState<'cover' | 'content' | 'end' | null>(null);
 
   const [formData, setFormData] = useState<SettingsFormData>({
     primary_color: '#0A66C2',
@@ -355,121 +357,70 @@ export default function Settings() {
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Design Preferences</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Design Preferences</h2>
             <p className="text-sm text-gray-600 mb-6">Customize the layout and style of your carousel slides</p>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-3">
-                  Cover Page Layout
-                </label>
-                <div className="grid grid-cols-2 gap-4">
-                  <DesignPreview
-                    type="cover"
-                    variant="centered"
-                    selected={formData.cover_alignment === 'centered'}
-                    onClick={() => setFormData({ ...formData, cover_alignment: 'centered' })}
-                    label="Centered"
-                    primaryColor={formData.primary_color}
-                  />
-                  <DesignPreview
-                    type="cover"
-                    variant="start"
-                    selected={formData.cover_alignment === 'start'}
-                    onClick={() => setFormData({ ...formData, cover_alignment: 'start' })}
-                    label="Left aligned"
-                    primaryColor={formData.primary_color}
-                  />
-                </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-3">
-                  Signature Position
-                </label>
-                <div className="grid grid-cols-2 gap-4">
-                  <DesignPreview
-                    type="cover"
-                    variant="bottom-right"
-                    selected={formData.signature_position === 'bottom-right'}
-                    onClick={() => setFormData({ ...formData, signature_position: 'bottom-right' })}
-                    label="Bottom right"
-                    primaryColor={formData.primary_color}
-                  />
-                  <DesignPreview
-                    type="cover"
-                    variant="bottom-left"
-                    selected={formData.signature_position === 'bottom-left'}
-                    onClick={() => setFormData({ ...formData, signature_position: 'bottom-left' })}
-                    label="Bottom left"
-                    primaryColor={formData.primary_color}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-3">
-                  Content Slides Style
-                </label>
-                <div className="grid grid-cols-2 gap-4">
-                  <DesignPreview
-                    type="content"
-                    variant="split"
-                    selected={formData.content_style === 'split'}
-                    onClick={() => setFormData({ ...formData, content_style: 'split' })}
-                    label="Split (Title + Content)"
-                    primaryColor={formData.primary_color}
-                  />
-                  <DesignPreview
-                    type="content"
-                    variant="combined"
-                    selected={formData.content_style === 'combined'}
-                    onClick={() => setFormData({ ...formData, content_style: 'combined' })}
-                    label="Combined"
-                    primaryColor={formData.primary_color}
-                  />
-                </div>
-
-                {formData.content_style === 'split' && (
-                  <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <input
-                      type="checkbox"
-                      id="showSlideNumbers"
-                      checked={formData.show_slide_numbers}
-                      onChange={(e) => setFormData({ ...formData, show_slide_numbers: e.target.checked })}
-                      className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
-                    />
-                    <label htmlFor="showSlideNumbers" className="text-sm text-gray-700">
-                      Show slide numbers on title slides
-                    </label>
+            <div className="grid grid-cols-3 gap-4">
+              <PreviewCard
+                title="Cover"
+                description="First page design"
+                preview={
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
+                    <div className={`w-3/4 h-3 rounded mb-2 ${formData.cover_alignment === 'start' ? 'mr-auto' : 'mx-auto'}`} style={{ backgroundColor: formData.primary_color }} />
+                    <div className={`w-1/2 h-2 bg-gray-400 rounded ${formData.cover_alignment === 'start' ? 'mr-auto' : 'mx-auto'}`} />
+                    {formData.signature_position && (
+                      <div className={`absolute bottom-4 ${formData.signature_position === 'bottom-right' ? 'right-4' : 'left-4'} w-6 h-1.5 bg-gray-500 rounded`} />
+                    )}
                   </div>
-                )}
+                }
+                onCustomize={() => setCustomizeModalOpen('cover')}
+              />
 
-                {formData.content_style === 'combined' && (
-                  <div className="mt-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Content alignment
-                    </label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <DesignPreview
-                        type="content"
-                        variant="centered"
-                        selected={formData.content_alignment === 'centered'}
-                        onClick={() => setFormData({ ...formData, content_alignment: 'centered' })}
-                        label="Centered"
-                        primaryColor={formData.primary_color}
-                      />
-                      <DesignPreview
-                        type="content"
-                        variant="start"
-                        selected={formData.content_alignment === 'start'}
-                        onClick={() => setFormData({ ...formData, content_alignment: 'start' })}
-                        label="Left aligned"
-                        primaryColor={formData.primary_color}
-                      />
+              <PreviewCard
+                title="Content"
+                description="Main slides style"
+                preview={
+                  formData.content_style === 'split' ? (
+                    <div className="absolute inset-0 flex flex-col gap-2 p-4">
+                      <div className="flex-1 bg-white rounded flex items-center justify-center">
+                        <div className="w-2/3 h-3 rounded" style={{ backgroundColor: formData.primary_color }} />
+                      </div>
+                      <div className="flex-1 bg-white rounded flex flex-col justify-center px-3 gap-1">
+                        <div className="w-full h-1.5 bg-gray-400 rounded" />
+                        <div className="w-4/5 h-1.5 bg-gray-400 rounded" />
+                        <div className="w-full h-1.5 bg-gray-400 rounded" />
+                      </div>
                     </div>
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col justify-center p-4 gap-2">
+                      <div className={`h-3 rounded ${formData.content_alignment === 'start' ? 'w-2/3' : 'w-2/3 mx-auto'}`} style={{ backgroundColor: formData.primary_color }} />
+                      <div className="space-y-1">
+                        <div className={`h-1.5 bg-gray-400 rounded ${formData.content_alignment === 'start' ? 'w-full' : 'w-full mx-auto'}`} />
+                        <div className={`h-1.5 bg-gray-400 rounded ${formData.content_alignment === 'start' ? 'w-4/5' : 'w-4/5 mx-auto'}`} />
+                        <div className={`h-1.5 bg-gray-400 rounded ${formData.content_alignment === 'start' ? 'w-full' : 'w-full mx-auto'}`} />
+                      </div>
+                    </div>
+                  )
+                }
+                onCustomize={() => setCustomizeModalOpen('content')}
+              />
+
+              <PreviewCard
+                title="End Page"
+                description="Last page design"
+                preview={
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 gap-2">
+                    {formData.end_page_image ? (
+                      <img src={formData.end_page_image} alt="" className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${formData.primary_color}` }} />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full" style={{ backgroundColor: formData.primary_color, opacity: 0.3 }} />
+                    )}
+                    <div className="w-2/3 h-3 rounded" style={{ backgroundColor: formData.primary_color }} />
+                    <div className="w-1/2 h-2 bg-gray-400 rounded" />
                   </div>
-                )}
-              </div>
+                }
+                onCustomize={() => setCustomizeModalOpen('end')}
+              />
             </div>
           </div>
 
@@ -599,6 +550,23 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      <CustomizeModal
+        isOpen={customizeModalOpen !== null}
+        onClose={() => setCustomizeModalOpen(null)}
+        type={customizeModalOpen || 'cover'}
+        coverAlignment={formData.cover_alignment}
+        signaturePosition={formData.signature_position}
+        contentStyle={formData.content_style}
+        showSlideNumbers={formData.show_slide_numbers}
+        contentAlignment={formData.content_alignment}
+        primaryColor={formData.primary_color}
+        onUpdateCoverAlignment={(value) => setFormData({ ...formData, cover_alignment: value })}
+        onUpdateSignaturePosition={(value) => setFormData({ ...formData, signature_position: value })}
+        onUpdateContentStyle={(value) => setFormData({ ...formData, content_style: value })}
+        onUpdateShowSlideNumbers={(value) => setFormData({ ...formData, show_slide_numbers: value })}
+        onUpdateContentAlignment={(value) => setFormData({ ...formData, content_alignment: value })}
+      />
     </div>
   );
 }
