@@ -193,27 +193,70 @@ export function CustomizeModal({
 
   const renderEndOptions = () => (
     <div className="space-y-6">
-      <div>
-        <label className="block text-sm font-semibold text-gray-900 mb-3">Profile Image</label>
-        {endPageImage ? (
-          <div className="flex items-center gap-4">
+      <div className="bg-gray-50 rounded-xl p-6 border-2 border-gray-200">
+        <div className="aspect-square bg-white rounded-lg shadow-lg flex flex-col items-center justify-center p-8 gap-4">
+          {endPageImage ? (
             <img
               src={endPageImage}
-              alt="Profile preview"
-              className="w-20 h-20 rounded-full object-cover"
-              style={{ border: `3px solid ${primaryColor}` }}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover"
+              style={{ border: `4px solid ${primaryColor}` }}
             />
-            <button
-              type="button"
-              onClick={removeImage}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors"
+          ) : (
+            <div
+              className="w-24 h-24 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: primaryColor, opacity: 0.2 }}
             >
-              Remove Image
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <label className="flex-1 cursor-pointer">
+              <svg className="w-12 h-12" style={{ color: primaryColor }} fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+            </div>
+          )}
+
+          <h2 className="text-2xl font-bold text-gray-900 text-center">
+            {endPageTitle || 'Your Name'}
+          </h2>
+
+          <p className="text-lg text-gray-600 text-center">
+            {endPageSubtitle || 'Follow me for more content'}
+          </p>
+
+          {endPageContact && (
+            <p className="text-sm text-gray-500 text-center mt-2">
+              {endPageContact}
+            </p>
+          )}
+
+          <button
+            className="mt-4 px-8 py-3 rounded-lg font-semibold text-white transition-colors"
+            style={{ backgroundColor: primaryColor }}
+          >
+            Follow
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-3">Profile Image</label>
+          {endPageImage ? (
+            <div className="flex items-center gap-4">
+              <img
+                src={endPageImage}
+                alt="Profile preview"
+                className="w-16 h-16 rounded-full object-cover"
+                style={{ border: `3px solid ${primaryColor}` }}
+              />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                Remove Image
+              </button>
+            </div>
+          ) : (
+            <label className="cursor-pointer block">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-gray-400 transition-colors">
                 <div className="flex flex-col items-center gap-2">
                   <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,41 +273,41 @@ export function CustomizeModal({
                 className="hidden"
               />
             </label>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-900 mb-2">Title (Your Name)</label>
-        <input
-          type="text"
-          value={endPageTitle}
-          onChange={(e) => onUpdateEndPageTitle?.(e.target.value)}
-          placeholder="Your Name"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-2">Title (Your Name)</label>
+          <input
+            type="text"
+            value={endPageTitle}
+            onChange={(e) => onUpdateEndPageTitle?.(e.target.value)}
+            placeholder="Your Name"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-900 mb-2">Subtitle (Call to Action)</label>
-        <input
-          type="text"
-          value={endPageSubtitle}
-          onChange={(e) => onUpdateEndPageSubtitle?.(e.target.value)}
-          placeholder="Follow me for more content"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-2">Subtitle (Call to Action)</label>
+          <input
+            type="text"
+            value={endPageSubtitle}
+            onChange={(e) => onUpdateEndPageSubtitle?.(e.target.value)}
+            placeholder="Follow me for more content"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-900 mb-2">Contact (Optional)</label>
-        <input
-          type="text"
-          value={endPageContact}
-          onChange={(e) => onUpdateEndPageContact?.(e.target.value)}
-          placeholder="contact@example.com"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-        />
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-2">Contact (Optional)</label>
+          <input
+            type="text"
+            value={endPageContact}
+            onChange={(e) => onUpdateEndPageContact?.(e.target.value)}
+            placeholder="contact@example.com"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+          />
+        </div>
       </div>
     </div>
   );
