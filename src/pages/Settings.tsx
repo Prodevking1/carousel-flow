@@ -146,33 +146,6 @@ export default function Settings() {
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Signature</h2>
-            <div className="space-y-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.show_signature}
-                  onChange={(e) => setFormData({ ...formData, show_signature: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
-                />
-                <span className="text-sm font-medium text-gray-700">
-                  Show signature on cover page
-                </span>
-              </label>
-
-              {formData.show_signature && (
-                <input
-                  type="text"
-                  value={formData.signature_name}
-                  onChange={(e) => setFormData({ ...formData, signature_name: e.target.value })}
-                  placeholder="Your Name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-                />
-              )}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-2">Design Preferences</h2>
             <p className="text-sm text-gray-600 mb-6">Customize the layout and style of your carousel slides</p>
 
