@@ -9,12 +9,22 @@ interface TemplateProps {
 }
 
 export function Template2Cover({ slide, settings }: TemplateProps) {
+  const meshGradient = `
+    radial-gradient(at 27% 37%, ${settings.primary_color}15 0px, transparent 50%),
+    radial-gradient(at 97% 21%, ${settings.primary_color}10 0px, transparent 50%),
+    radial-gradient(at 52% 99%, ${settings.primary_color}12 0px, transparent 50%),
+    radial-gradient(at 10% 29%, ${settings.primary_color}08 0px, transparent 50%),
+    radial-gradient(at 97% 96%, ${settings.primary_color}18 0px, transparent 50%),
+    radial-gradient(at 33% 50%, ${settings.primary_color}08 0px, transparent 50%),
+    radial-gradient(at 79% 53%, ${settings.primary_color}12 0px, transparent 50%)
+  `;
+
   return (
     <div className="w-full aspect-square relative overflow-hidden bg-white">
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(135deg, ${settings.primary_color}10 0%, ${settings.primary_color}05 50%, white 100%)`
+          background: meshGradient
         }}
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center p-16">
@@ -44,8 +54,20 @@ export function Template2Cover({ slide, settings }: TemplateProps) {
 export function Template2Content({ slide, totalSlides, settings }: TemplateProps) {
   const primaryColor = settings.primary_color;
 
+  const subtleMeshGradient = `
+    radial-gradient(at 20% 30%, ${settings.primary_color}03 0px, transparent 50%),
+    radial-gradient(at 90% 20%, ${settings.primary_color}02 0px, transparent 50%),
+    radial-gradient(at 50% 95%, ${settings.primary_color}03 0px, transparent 50%)
+  `;
+
   return (
     <div className="w-full aspect-square relative overflow-hidden bg-white">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: subtleMeshGradient
+        }}
+      />
       <div className="absolute inset-0 flex flex-col p-16">
         <h2 className="text-5xl font-bold text-gray-900 mb-8 leading-tight">
           {slide.title}
@@ -115,12 +137,22 @@ export function Template2CTA({ slide, settings }: TemplateProps) {
 }
 
 export function Template2End({ settings }: { settings: UserSettings }) {
+  const meshGradient = `
+    radial-gradient(at 73% 63%, ${settings.primary_color}15 0px, transparent 50%),
+    radial-gradient(at 3% 79%, ${settings.primary_color}10 0px, transparent 50%),
+    radial-gradient(at 48% 1%, ${settings.primary_color}12 0px, transparent 50%),
+    radial-gradient(at 90% 71%, ${settings.primary_color}08 0px, transparent 50%),
+    radial-gradient(at 3% 4%, ${settings.primary_color}18 0px, transparent 50%),
+    radial-gradient(at 67% 50%, ${settings.primary_color}08 0px, transparent 50%),
+    radial-gradient(at 21% 47%, ${settings.primary_color}12 0px, transparent 50%)
+  `;
+
   return (
     <div className="w-full aspect-square relative overflow-hidden bg-white">
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(135deg, white 0%, ${settings.primary_color}05 50%, ${settings.primary_color}10 100%)`
+          background: meshGradient
         }}
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center p-16 text-center">
