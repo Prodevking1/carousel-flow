@@ -248,6 +248,8 @@ export default function Settings() {
         type={customizeModalOpen || 'cover'}
         coverAlignment={formData.cover_alignment}
         signaturePosition={formData.signature_position}
+        showSignature={formData.show_signature}
+        signatureName={formData.signature_name}
         contentStyle={formData.content_style}
         showSlideNumbers={formData.show_slide_numbers}
         contentAlignment={formData.content_alignment}
@@ -258,6 +260,8 @@ export default function Settings() {
         endPageImage={formData.end_page_image}
         onUpdateCoverAlignment={(value) => setFormData({ ...formData, cover_alignment: value })}
         onUpdateSignaturePosition={(value) => setFormData({ ...formData, signature_position: value })}
+        onUpdateShowSignature={(value) => setFormData({ ...formData, show_signature: value })}
+        onUpdateSignatureName={(value) => setFormData({ ...formData, signature_name: value })}
         onUpdateContentStyle={(value) => setFormData({ ...formData, content_style: value })}
         onUpdateShowSlideNumbers={(value) => setFormData({ ...formData, show_slide_numbers: value })}
         onUpdateContentAlignment={(value) => setFormData({ ...formData, content_alignment: value })}

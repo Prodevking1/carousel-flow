@@ -8,6 +8,10 @@ interface CustomizeModalProps {
   type: 'cover' | 'content' | 'end';
   coverAlignment: CoverAlignment;
   signaturePosition: SignaturePosition;
+  showSignature: boolean;
+  signatureName: string;
+  coverTitle?: string;
+  coverSubtitle?: string;
   contentStyle: ContentStyle;
   showSlideNumbers: boolean;
   contentAlignment: ContentAlignment;
@@ -18,6 +22,10 @@ interface CustomizeModalProps {
   endPageImage?: string;
   onUpdateCoverAlignment: (value: CoverAlignment) => void;
   onUpdateSignaturePosition: (value: SignaturePosition) => void;
+  onUpdateShowSignature: (value: boolean) => void;
+  onUpdateSignatureName: (value: string) => void;
+  onUpdateCoverTitle?: (value: string) => void;
+  onUpdateCoverSubtitle?: (value: string) => void;
   onUpdateContentStyle: (value: ContentStyle) => void;
   onUpdateShowSlideNumbers: (value: boolean) => void;
   onUpdateContentAlignment: (value: ContentAlignment) => void;
@@ -33,6 +41,10 @@ export function CustomizeModal({
   type,
   coverAlignment,
   signaturePosition,
+  showSignature,
+  signatureName,
+  coverTitle = '',
+  coverSubtitle = '',
   contentStyle,
   showSlideNumbers,
   contentAlignment,
@@ -43,6 +55,10 @@ export function CustomizeModal({
   endPageImage = '',
   onUpdateCoverAlignment,
   onUpdateSignaturePosition,
+  onUpdateShowSignature,
+  onUpdateSignatureName,
+  onUpdateCoverTitle,
+  onUpdateCoverSubtitle,
   onUpdateContentStyle,
   onUpdateShowSlideNumbers,
   onUpdateContentAlignment,
@@ -57,27 +73,48 @@ export function CustomizeModal({
     <div className="space-y-6">
       <div className="bg-gray-50 rounded-xl p-6 border-2 border-gray-200">
         <div
-          className={`aspect-square bg-white rounded-lg shadow-lg flex flex-col p-8 gap-4 ${coverAlignment === 'start' ? 'items-start' : 'items-center'}`}
+          className={`relative aspect-square bg-white rounded-lg shadow-lg flex flex-col p-8 gap-4 ${coverAlignment === 'start' ? 'items-start' : 'items-center'}`}
           style={{ background: `linear-gradient(135deg, ${primaryColor}10 0%, ${primaryColor}05 100%)` }}
         >
           <div className={`flex-1 flex flex-col ${coverAlignment === 'start' ? 'items-start' : 'items-center'} justify-center gap-4 w-full ${coverAlignment === 'start' ? 'text-left' : 'text-center'}`}>
-            <div className="w-20 h-1 rounded-full" style={{ backgroundColor: primaryColor }}></div>
             <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-              5 Tips for Success
+              {coverTitle || 'How to Build a Successful Content Strategy in 2024'}
             </h1>
             <p className="text-lg text-gray-600">
-              A comprehensive guide
+              {coverSubtitle || 'A step-by-step guide to creating engaging content'}
             </p>
           </div>
-          {signaturePosition && (
+          {showSignature && signaturePosition && (
             <div className={`absolute bottom-6 ${signaturePosition === 'bottom-right' ? 'right-6' : 'left-6'}`}>
-              <div className="text-sm font-medium text-gray-500">Your Name</div>
+              <div className="text-sm font-medium text-gray-500">{signatureName || 'Your Name'}</div>
             </div>
           )}
         </div>
       </div>
 
       <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-2">Title</label>
+          <input
+            type="text"
+            value={coverTitle}
+            onChange={(e) => onUpdateCoverTitle?.(e.target.value)}
+            placeholder="How to Build a Successful Content Strategy in 2024"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-2">Subtitle</label>
+          <input
+            type="text"
+            value={coverSubtitle}
+            onChange={(e) => onUpdateCoverSubtitle?.(e.target.value)}
+            placeholder="A step-by-step guide to creating engaging content"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+          />
+        </div>
+
         <div>
           <label className="block text-sm font-semibold text-gray-900 mb-3">
             Page Layout
@@ -103,27 +140,55 @@ export function CustomizeModal({
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-900 mb-3">
-            Signature Position
-          </label>
-          <div className="grid grid-cols-2 gap-4">
-            <DesignPreview
-              type="cover"
-              variant="bottom-right"
-              selected={signaturePosition === 'bottom-right'}
-              onClick={() => onUpdateSignaturePosition('bottom-right')}
-              label="Bottom right"
-              primaryColor={primaryColor}
+          <div className="flex items-center gap-3 mb-3">
+            <input
+              type="checkbox"
+              id="showSignature"
+              checked={showSignature}
+              onChange={(e) => onUpdateShowSignature(e.target.checked)}
+              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
             />
-            <DesignPreview
-              type="cover"
-              variant="bottom-left"
-              selected={signaturePosition === 'bottom-left'}
-              onClick={() => onUpdateSignaturePosition('bottom-left')}
-              label="Bottom left"
-              primaryColor={primaryColor}
-            />
+            <label htmlFor="showSignature" className="text-sm font-semibold text-gray-900">
+              Show signature
+            </label>
           </div>
+
+          {showSignature && (
+            <div className="space-y-4 pl-7">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Signature name</label>
+                <input
+                  type="text"
+                  value={signatureName}
+                  onChange={(e) => onUpdateSignatureName(e.target.value)}
+                  placeholder="Your Name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Signature position</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <DesignPreview
+                    type="cover"
+                    variant="bottom-right"
+                    selected={signaturePosition === 'bottom-right'}
+                    onClick={() => onUpdateSignaturePosition('bottom-right')}
+                    label="Bottom right"
+                    primaryColor={primaryColor}
+                  />
+                  <DesignPreview
+                    type="cover"
+                    variant="bottom-left"
+                    selected={signaturePosition === 'bottom-left'}
+                    onClick={() => onUpdateSignaturePosition('bottom-left')}
+                    label="Bottom left"
+                    primaryColor={primaryColor}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
