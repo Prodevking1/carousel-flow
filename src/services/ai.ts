@@ -32,6 +32,8 @@ Each content slide should have:
 - A punchy, focused title (max 6 words)
 - 3-5 bullet points explaining tactics or insights (max 80 chars each)
 - Include growth metrics, data points, or specific examples when possible
+- MAXIMUM 2 SENTENCES per bullet point or paragraph
+- After each sentence, add 2 line breaks for clear visual spacing
 
 Make it marketing-centric, data-driven, and focused on GROWTH TACTICS that entrepreneurs and marketers can learn from.`;
 
@@ -67,13 +69,14 @@ For content slides, use the "content" field (not "bullets") to write fluid prose
 Write in a natural, conversational style. Make content digestible and well-spaced.
 Use **bold** for important words or key terms (use markdown bold syntax).
 NEVER use apostrophes or quotation marks around words.
+CRITICAL: MAXIMUM 2 SENTENCES per paragraph. After EACH sentence, add 2 line breaks (\\n\\n) for clear visual spacing.
 Example:
 {
   "slide_number": 2,
   "type": "content",
   "title": "Growth Strategy",
   "stats": "500M users in 5 years",
-  "content": "Their **viral loop** was genius. Every user invited 3 friends on average, creating exponential growth. The **gamification** kept users engaged for 30+ minutes daily, while social sharing amplified their reach. This data-driven approach turned users into brand ambassadors."
+  "content": "Their **viral loop** was genius.\\n\\nEvery user invited 3 friends on average, creating exponential growth."
 }`;
   } else {
     prompt += `\n\nCONTENT FORMAT - BULLETS:
@@ -81,6 +84,7 @@ For content slides, use the "bullets" array field (not "content") with bullet po
 Make content digestible and well-spaced.
 Use **bold** for important words or key terms (use markdown bold syntax).
 NEVER use apostrophes or quotation marks around words.
+CRITICAL: MAXIMUM 2 SENTENCES per bullet point. If a bullet has 2 sentences, separate them with 2 line breaks (\\n\\n) for clear visual spacing.
 Example:
 {
   "slide_number": 2,
@@ -88,10 +92,9 @@ Example:
   "title": "Growth Strategy",
   "stats": "500M users in 5 years",
   "bullets": [
-    "**Viral loop**: avg 3 friend invites per user",
-    "**Gamification**: 30+ min daily engagement",
-    "**Social sharing** amplified reach 10x",
-    "Users became **brand ambassadors**"
+    "**Viral loop**: avg 3 friend invites per user.\\n\\nCreated exponential growth.",
+    "**Gamification**: 30+ min daily engagement.\\n\\nKept users coming back.",
+    "**Social sharing** amplified reach 10x"
   ]
 }`;
   }
@@ -346,13 +349,15 @@ Generate a NEW version of this slide with DIFFERENT content but maintaining the 
 Use the "content" field (not "bullets") to write fluid prose text.
 Write in a natural, conversational style. Make content digestible and well-spaced.
 Use **bold** for important words or key terms (use markdown bold syntax).
-NEVER use apostrophes or quotation marks around words.`;
+NEVER use apostrophes or quotation marks around words.
+CRITICAL: MAXIMUM 2 SENTENCES per paragraph. After EACH sentence, add 2 line breaks (\\n\\n) for clear visual spacing.`;
   } else {
     prompt += `\n\nCONTENT FORMAT - BULLETS:
 Use the "bullets" array field (not "content") with bullet points.
 Make content digestible and well-spaced.
 Use **bold** for important words or key terms (use markdown bold syntax).
-NEVER use apostrophes or quotation marks around words.`;
+NEVER use apostrophes or quotation marks around words.
+CRITICAL: MAXIMUM 2 SENTENCES per bullet point. If a bullet has 2 sentences, separate them with 2 line breaks (\\n\\n) for clear visual spacing.`;
   }
 
   if (carousel.sources && carousel.sources.trim()) {
