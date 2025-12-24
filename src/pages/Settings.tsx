@@ -82,21 +82,6 @@ export default function Settings() {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, end_page_image: reader.result as string });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = () => {
-    setFormData({ ...formData, end_page_image: '' });
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -254,131 +239,6 @@ export default function Settings() {
               />
             </div>
           </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">End Page Content</h2>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
-                {formData.end_page_image ? (
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={formData.end_page_image}
-                      alt="Profile preview"
-                      className="w-20 h-20 rounded-full object-cover"
-                      style={{ border: `3px solid ${formData.primary_color}` }}
-                    />
-                    <button
-                      type="button"
-                      onClick={removeImage}
-                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors"
-                    >
-                      Remove Image
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3">
-                    <label className="flex-1 cursor-pointer">
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-gray-400 transition-colors">
-                        <div className="flex flex-col items-center gap-2">
-                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <span className="text-sm text-gray-600">Click to upload image</span>
-                          <span className="text-xs text-gray-500">PNG, JPG up to 5MB</span>
-                        </div>
-                      </div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title (Your Name)</label>
-                <input
-                  type="text"
-                  value={formData.end_page_title}
-                  onChange={(e) => setFormData({ ...formData, end_page_title: e.target.value })}
-                  placeholder="Your Name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle (Call to Action)</label>
-                <input
-                  type="text"
-                  value={formData.end_page_subtitle}
-                  onChange={(e) => setFormData({ ...formData, end_page_subtitle: e.target.value })}
-                  placeholder="Follow me for more content"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact (Optional)</label>
-                <input
-                  type="text"
-                  value={formData.end_page_contact}
-                  onChange={(e) => setFormData({ ...formData, end_page_contact: e.target.value })}
-                  placeholder="contact@example.com"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Preview</h2>
-            <p className="text-sm text-gray-600 mb-6">See how your selected design will look</p>
-
-            <div className="flex gap-2 mb-6 border-b border-gray-200">
-              <button
-                onClick={() => setPreviewTab('cover')}
-                className={`px-4 py-2 font-medium transition-colors ${
-                  previewTab === 'cover'
-                    ? 'text-gray-900 border-b-2 border-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Cover
-              </button>
-              <button
-                onClick={() => setPreviewTab('content')}
-                className={`px-4 py-2 font-medium transition-colors ${
-                  previewTab === 'content'
-                    ? 'text-gray-900 border-b-2 border-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Content
-              </button>
-              <button
-                onClick={() => setPreviewTab('end')}
-                className={`px-4 py-2 font-medium transition-colors ${
-                  previewTab === 'end'
-                    ? 'text-gray-900 border-b-2 border-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                End Page
-              </button>
-            </div>
-
-            <div className="max-w-lg mx-auto">
-              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-xl border-2 border-gray-300">
-                {previewTab === 'cover' && renderTemplateCover(formData.design_template, formData.primary_color, 'large')}
-                {previewTab === 'content' && renderTemplateContent(formData.design_template, formData.primary_color, 'large')}
-                {previewTab === 'end' && renderTemplateEnd(formData.design_template, formData.primary_color, 'large')}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -392,11 +252,19 @@ export default function Settings() {
         showSlideNumbers={formData.show_slide_numbers}
         contentAlignment={formData.content_alignment}
         primaryColor={formData.primary_color}
+        endPageTitle={formData.end_page_title}
+        endPageSubtitle={formData.end_page_subtitle}
+        endPageContact={formData.end_page_contact}
+        endPageImage={formData.end_page_image}
         onUpdateCoverAlignment={(value) => setFormData({ ...formData, cover_alignment: value })}
         onUpdateSignaturePosition={(value) => setFormData({ ...formData, signature_position: value })}
         onUpdateContentStyle={(value) => setFormData({ ...formData, content_style: value })}
         onUpdateShowSlideNumbers={(value) => setFormData({ ...formData, show_slide_numbers: value })}
         onUpdateContentAlignment={(value) => setFormData({ ...formData, content_alignment: value })}
+        onUpdateEndPageTitle={(value) => setFormData({ ...formData, end_page_title: value })}
+        onUpdateEndPageSubtitle={(value) => setFormData({ ...formData, end_page_subtitle: value })}
+        onUpdateEndPageContact={(value) => setFormData({ ...formData, end_page_contact: value })}
+        onUpdateEndPageImage={(value) => setFormData({ ...formData, end_page_image: value })}
       />
     </div>
   );
