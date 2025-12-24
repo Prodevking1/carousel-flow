@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Loader2, Check } from 'lucide-react';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { getOrCreateUserSettings, updateUserSettings } from '../services/settings';
-import { SettingsFormData, DesignTemplate, CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
+import { SettingsFormData, CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
 import { getCurrentUserId } from '../services/user';
 import { CustomizeModal } from '../components/CustomizeModal';
 import { PreviewCard } from '../components/PreviewCard';
@@ -12,30 +12,16 @@ const PRESET_COLORS = [
   '#00D2D3', '#EE5A6F', '#2ECC71', '#E74C3C', '#9B59B6'
 ];
 
-interface TemplatePreview {
-  id: DesignTemplate;
-  name: string;
-  description: string;
-}
-
-const TEMPLATES: TemplatePreview[] = [
-  { id: 'template1', name: 'Template 1', description: 'Titre et contenu séparés sur 2 pages' },
-  { id: 'template2', name: 'Template 2', description: 'Titre et contenu dans la même page' }
-];
-
 export default function Settings() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [previewTab, setPreviewTab] = useState<'cover' | 'content' | 'end'>('cover');
-  const [expandedTemplate, setExpandedTemplate] = useState<DesignTemplate | null>('template1');
   const [customizeModalOpen, setCustomizeModalOpen] = useState<'cover' | 'content' | 'end' | null>(null);
 
   const [formData, setFormData] = useState<SettingsFormData>({
     primary_color: '#0A66C2',
     show_signature: false,
     signature_name: '',
-    design_template: 'template1',
     cover_alignment: 'centered',
     signature_position: 'bottom-right',
     content_style: 'split',
@@ -60,7 +46,6 @@ export default function Settings() {
         primary_color: settings.primary_color,
         show_signature: settings.show_signature,
         signature_name: settings.signature_name,
-        design_template: settings.design_template || 'template1',
         cover_alignment: settings.cover_alignment,
         signature_position: settings.signature_position,
         content_style: settings.content_style,
@@ -112,88 +97,6 @@ export default function Settings() {
     setFormData({ ...formData, end_page_image: '' });
   };
 
-  const renderTemplateCover = (template: DesignTemplate, color: string, size: 'small' | 'large' = 'small') => {
-    const isLarge = size === 'large';
-
-    return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-white p-8">
-        <div className="text-center">
-          <div className={`font-bold text-gray-900 mb-2 ${isLarge ? 'text-4xl' : 'text-lg'}`}>
-            {isLarge ? 'Your Carousel Title' : 'Your Title'}
-          </div>
-          <div className={`text-gray-600 ${isLarge ? 'text-xl' : 'text-xs'}`}>
-            {isLarge ? 'Engaging subtitle that captures attention' : 'Subtitle here'}
-          </div>
-          {formData.show_signature && formData.signature_name && isLarge && (
-            <div className="absolute bottom-8 right-8 text-sm text-gray-700">
-              {formData.signature_name}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderTemplateContent = (template: DesignTemplate, color: string, size: 'small' | 'large' = 'small') => {
-    const isLarge = size === 'large';
-    const bullets = isLarge
-      ? ['First key point with detailed explanation', 'Second important insight worth noting', 'Third valuable takeaway for readers']
-      : ['Point 1', 'Point 2', 'Point 3'];
-
-    if (template === 'template1') {
-      return (
-        <div className={`w-full h-full flex flex-col bg-white ${isLarge ? 'p-12' : 'p-3'}`}>
-          <div className={`flex-1 ${isLarge ? 'space-y-6' : 'space-y-1.5'}`}>
-            {bullets.map((bullet, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className={`font-bold ${isLarge ? 'text-2xl' : 'text-[10px]'}`} style={{ color }}>→</div>
-                <div className={`text-gray-700 leading-relaxed ${isLarge ? 'text-lg' : 'text-[10px]'}`}>{bullet}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className={`w-full h-full flex flex-col bg-white ${isLarge ? 'p-12' : 'p-3'}`}>
-        <div className={`font-bold text-gray-900 mb-4 ${isLarge ? 'text-3xl' : 'text-xs'}`}>Content Slide</div>
-        <div className={`flex-1 ${isLarge ? 'space-y-6' : 'space-y-1.5'}`}>
-          {bullets.map((bullet, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <div className={`font-bold ${isLarge ? 'text-2xl' : 'text-[10px]'}`} style={{ color }}>→</div>
-              <div className={`text-gray-700 leading-relaxed ${isLarge ? 'text-lg' : 'text-[10px]'}`}>{bullet}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderTemplateEnd = (template: DesignTemplate, color: string, size: 'small' | 'large' = 'small') => {
-    const isLarge = size === 'large';
-
-    return (
-      <div className={`w-full h-full flex flex-col items-center justify-center bg-white ${isLarge ? 'p-12' : 'p-3'}`}>
-        {formData.end_page_image && (
-          <div className={`${isLarge ? 'mb-6' : 'mb-2'}`}>
-            <img
-              src={formData.end_page_image}
-              alt="Profile"
-              className={`rounded-full ${isLarge ? 'w-32 h-32' : 'w-12 h-12'}`}
-              style={{ border: `${isLarge ? '4' : '2'}px solid ${color}` }}
-            />
-          </div>
-        )}
-        <div className={`font-bold text-gray-900 mb-3 ${isLarge ? 'text-5xl' : 'text-sm'}`}>{formData.end_page_title}</div>
-        <div className={`text-gray-600 mb-6 text-center ${isLarge ? 'text-2xl max-w-lg' : 'text-[9px]'}`}>{formData.end_page_subtitle}</div>
-        {formData.end_page_contact && isLarge && (
-          <div className="mt-4 text-base text-gray-700">{formData.end_page_contact}</div>
-        )}
-      </div>
-    );
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -237,78 +140,6 @@ export default function Settings() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Choose Your Template</h2>
-            <p className="text-sm text-gray-600 mb-6">Select the design template that will be used to generate your carousels</p>
-            <div className="space-y-4">
-              {TEMPLATES.map((template) => {
-                const isExpanded = expandedTemplate === template.id;
-                const isSelected = formData.design_template === template.id;
-
-                return (
-                  <div
-                    key={template.id}
-                    className={`border-2 rounded-xl transition-all ${
-                      isSelected
-                        ? 'border-gray-900 shadow-md'
-                        : 'border-gray-200'
-                    }`}
-                  >
-                    <button
-                      onClick={() => {
-                        setExpandedTemplate(isExpanded ? null : template.id);
-                        setFormData({ ...formData, design_template: template.id });
-                      }}
-                      className="w-full p-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors rounded-xl"
-                    >
-                      <div>
-                        <div className="font-bold text-gray-900 text-lg mb-1">{template.name}</div>
-                        <div className="text-sm text-gray-600">{template.description}</div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {isSelected && (
-                          <div className="bg-gray-900 text-white rounded-full p-1.5">
-                            <Check size={16} />
-                          </div>
-                        )}
-                        <div className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                          </svg>
-                        </div>
-                      </div>
-                    </button>
-
-                    {isExpanded && (
-                      <div className="px-5 pb-5 pt-2">
-                        <div className="grid grid-cols-3 gap-4">
-                          <div>
-                            <div className="text-xs font-medium text-gray-600 mb-2">Cover</div>
-                            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm">
-                              {renderTemplateCover(template.id, formData.primary_color)}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs font-medium text-gray-600 mb-2">Content</div>
-                            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm">
-                              {renderTemplateContent(template.id, formData.primary_color)}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs font-medium text-gray-600 mb-2">End Page</div>
-                            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm">
-                              {renderTemplateEnd(template.id, formData.primary_color)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Brand Color</h2>
             <div className="flex gap-3">

@@ -1,4 +1,3 @@
-export type DesignTemplate = 'template1' | 'template2';
 export type CoverAlignment = 'centered' | 'start';
 export type SignaturePosition = 'bottom-right' | 'bottom-left';
 export type ContentStyle = 'split' | 'combined';
@@ -10,7 +9,6 @@ export interface UserSettings {
   primary_color: string;
   show_signature: boolean;
   signature_name: string;
-  design_template: DesignTemplate;
   cover_alignment: CoverAlignment;
   signature_position: SignaturePosition;
   content_style: ContentStyle;
@@ -29,7 +27,6 @@ export interface SettingsFormData {
   primary_color: string;
   show_signature: boolean;
   signature_name: string;
-  design_template: DesignTemplate;
   cover_alignment: CoverAlignment;
   signature_position: SignaturePosition;
   content_style: ContentStyle;

@@ -24,7 +24,6 @@ export async function getOrCreateUserSettings(userId: string): Promise<UserSetti
       primary_color: '#0A66C2',
       show_signature: false,
       signature_name: '',
-      design_template: 'template1',
       cover_alignment: 'centered',
       signature_position: 'bottom-right',
       content_style: 'split',
