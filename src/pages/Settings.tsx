@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Loader2, Check } from 'lucide-react';
 import { getOrCreateUserSettings, updateUserSettings } from '../services/settings';
-import { SettingsFormData, DesignTemplate } from '../types/settings';
+import { SettingsFormData, DesignTemplate, CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
 import { getCurrentUserId } from '../services/user';
+import { DesignPreview } from '../components/DesignPreview';
 
 const PRESET_COLORS = [
   '#0A66C2', '#4ECDC4', '#45B7D1', '#F7B731', '#5F27CD',
@@ -33,6 +34,11 @@ export default function Settings() {
     show_signature: false,
     signature_name: '',
     design_template: 'template1',
+    cover_alignment: 'centered',
+    signature_position: 'bottom-right',
+    content_style: 'split',
+    show_slide_numbers: true,
+    content_alignment: 'centered',
     end_page_title: 'Your Name',
     end_page_subtitle: 'Follow me for more content',
     end_page_cta: 'Follow for more content',
@@ -53,6 +59,11 @@ export default function Settings() {
         show_signature: settings.show_signature,
         signature_name: settings.signature_name,
         design_template: settings.design_template || 'template1',
+        cover_alignment: settings.cover_alignment,
+        signature_position: settings.signature_position,
+        content_style: settings.content_style,
+        show_slide_numbers: settings.show_slide_numbers,
+        content_alignment: settings.content_alignment,
         end_page_title: settings.end_page_title,
         end_page_subtitle: settings.end_page_subtitle,
         end_page_cta: settings.end_page_cta,
@@ -340,6 +351,125 @@ export default function Settings() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
                 />
               )}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Design Preferences</h2>
+            <p className="text-sm text-gray-600 mb-6">Customize the layout and style of your carousel slides</p>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-3">
+                  Cover Page Layout
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <DesignPreview
+                    type="cover"
+                    variant="centered"
+                    selected={formData.cover_alignment === 'centered'}
+                    onClick={() => setFormData({ ...formData, cover_alignment: 'centered' })}
+                    label="Centered"
+                    primaryColor={formData.primary_color}
+                  />
+                  <DesignPreview
+                    type="cover"
+                    variant="start"
+                    selected={formData.cover_alignment === 'start'}
+                    onClick={() => setFormData({ ...formData, cover_alignment: 'start' })}
+                    label="Left aligned"
+                    primaryColor={formData.primary_color}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-3">
+                  Signature Position
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <DesignPreview
+                    type="cover"
+                    variant="bottom-right"
+                    selected={formData.signature_position === 'bottom-right'}
+                    onClick={() => setFormData({ ...formData, signature_position: 'bottom-right' })}
+                    label="Bottom right"
+                    primaryColor={formData.primary_color}
+                  />
+                  <DesignPreview
+                    type="cover"
+                    variant="bottom-left"
+                    selected={formData.signature_position === 'bottom-left'}
+                    onClick={() => setFormData({ ...formData, signature_position: 'bottom-left' })}
+                    label="Bottom left"
+                    primaryColor={formData.primary_color}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-3">
+                  Content Slides Style
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <DesignPreview
+                    type="content"
+                    variant="split"
+                    selected={formData.content_style === 'split'}
+                    onClick={() => setFormData({ ...formData, content_style: 'split' })}
+                    label="Split (Title + Content)"
+                    primaryColor={formData.primary_color}
+                  />
+                  <DesignPreview
+                    type="content"
+                    variant="combined"
+                    selected={formData.content_style === 'combined'}
+                    onClick={() => setFormData({ ...formData, content_style: 'combined' })}
+                    label="Combined"
+                    primaryColor={formData.primary_color}
+                  />
+                </div>
+
+                {formData.content_style === 'split' && (
+                  <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <input
+                      type="checkbox"
+                      id="showSlideNumbers"
+                      checked={formData.show_slide_numbers}
+                      onChange={(e) => setFormData({ ...formData, show_slide_numbers: e.target.checked })}
+                      className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
+                    />
+                    <label htmlFor="showSlideNumbers" className="text-sm text-gray-700">
+                      Show slide numbers on title slides
+                    </label>
+                  </div>
+                )}
+
+                {formData.content_style === 'combined' && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Content alignment
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <DesignPreview
+                        type="content"
+                        variant="centered"
+                        selected={formData.content_alignment === 'centered'}
+                        onClick={() => setFormData({ ...formData, content_alignment: 'centered' })}
+                        label="Centered"
+                        primaryColor={formData.primary_color}
+                      />
+                      <DesignPreview
+                        type="content"
+                        variant="start"
+                        selected={formData.content_alignment === 'start'}
+                        onClick={() => setFormData({ ...formData, content_alignment: 'start' })}
+                        label="Left aligned"
+                        primaryColor={formData.primary_color}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

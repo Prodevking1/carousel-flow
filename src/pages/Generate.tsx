@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft, ChevronDown } from 'lucide-react';
 import { CarouselLanguage, SlideCount, ContentFormat, ContentLength } from '../types/carousel';
+import { CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
+import { DesignPreview } from '../components/DesignPreview';
+import { getOrCreateUserSettings } from '../services/settings';
+import { getCurrentUserId } from '../services/user';
 
 export default function Generate() {
   const navigate = useNavigate();
@@ -15,6 +19,30 @@ export default function Generate() {
   const [contentLength, setContentLength] = useState<ContentLength>('auto');
   const [error, setError] = useState('');
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [coverAlignment, setCoverAlignment] = useState<CoverAlignment>('centered');
+  const [signaturePosition, setSignaturePosition] = useState<SignaturePosition>('bottom-right');
+  const [contentStyle, setContentStyle] = useState<ContentStyle>('split');
+  const [showSlideNumbers, setShowSlideNumbers] = useState(true);
+  const [contentAlignment, setContentAlignment] = useState<ContentAlignment>('centered');
+  const [primaryColor, setPrimaryColor] = useState('#0A66C2');
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const userId = getCurrentUserId();
+        const settings = await getOrCreateUserSettings(userId);
+        setCoverAlignment(settings.cover_alignment);
+        setSignaturePosition(settings.signature_position);
+        setContentStyle(settings.content_style);
+        setShowSlideNumbers(settings.show_slide_numbers);
+        setContentAlignment(settings.content_alignment);
+        setPrimaryColor(settings.primary_color);
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+    };
+    loadSettings();
+  }, []);
 
   const languages = [
     { value: 'fr', label: 'Français', flag: '🇫🇷' },
@@ -159,7 +187,7 @@ export default function Generate() {
               </button>
 
               {showAdvancedSettings && (
-                <div className="mt-6 space-y-6">
+                <div className="mt-6 space-y-8">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-3">
                       Content length
@@ -289,6 +317,125 @@ export default function Generate() {
                         ? 'Enter a custom number between 3 and 20'
                         : `Fixed ${slideCount}-slide carousel`}
                     </p>
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Design Preferences</h3>
+
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-3">
+                          Cover Page Layout
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <DesignPreview
+                            type="cover"
+                            variant="centered"
+                            selected={coverAlignment === 'centered'}
+                            onClick={() => setCoverAlignment('centered')}
+                            label="Centered"
+                            primaryColor={primaryColor}
+                          />
+                          <DesignPreview
+                            type="cover"
+                            variant="start"
+                            selected={coverAlignment === 'start'}
+                            onClick={() => setCoverAlignment('start')}
+                            label="Left aligned"
+                            primaryColor={primaryColor}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-3">
+                          Signature Position
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <DesignPreview
+                            type="cover"
+                            variant="bottom-right"
+                            selected={signaturePosition === 'bottom-right'}
+                            onClick={() => setSignaturePosition('bottom-right')}
+                            label="Bottom right"
+                            primaryColor={primaryColor}
+                          />
+                          <DesignPreview
+                            type="cover"
+                            variant="bottom-left"
+                            selected={signaturePosition === 'bottom-left'}
+                            onClick={() => setSignaturePosition('bottom-left')}
+                            label="Bottom left"
+                            primaryColor={primaryColor}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-3">
+                          Content Slides Style
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <DesignPreview
+                            type="content"
+                            variant="split"
+                            selected={contentStyle === 'split'}
+                            onClick={() => setContentStyle('split')}
+                            label="Split (Title + Content)"
+                            primaryColor={primaryColor}
+                          />
+                          <DesignPreview
+                            type="content"
+                            variant="combined"
+                            selected={contentStyle === 'combined'}
+                            onClick={() => setContentStyle('combined')}
+                            label="Combined"
+                            primaryColor={primaryColor}
+                          />
+                        </div>
+
+                        {contentStyle === 'split' && (
+                          <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <input
+                              type="checkbox"
+                              id="showSlideNumbers"
+                              checked={showSlideNumbers}
+                              onChange={(e) => setShowSlideNumbers(e.target.checked)}
+                              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                            />
+                            <label htmlFor="showSlideNumbers" className="text-sm text-gray-700">
+                              Show slide numbers on title slides
+                            </label>
+                          </div>
+                        )}
+
+                        {contentStyle === 'combined' && (
+                          <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Content alignment
+                            </label>
+                            <div className="grid grid-cols-2 gap-4">
+                              <DesignPreview
+                                type="content"
+                                variant="centered"
+                                selected={contentAlignment === 'centered'}
+                                onClick={() => setContentAlignment('centered')}
+                                label="Centered"
+                                primaryColor={primaryColor}
+                              />
+                              <DesignPreview
+                                type="content"
+                                variant="start"
+                                selected={contentAlignment === 'start'}
+                                onClick={() => setContentAlignment('start')}
+                                label="Left aligned"
+                                primaryColor={primaryColor}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

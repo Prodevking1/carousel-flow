@@ -1,4 +1,8 @@
 export type DesignTemplate = 'template1' | 'template2';
+export type CoverAlignment = 'centered' | 'start';
+export type SignaturePosition = 'bottom-right' | 'bottom-left';
+export type ContentStyle = 'split' | 'combined';
+export type ContentAlignment = 'centered' | 'start';
 
 export interface UserSettings {
   id: string;
@@ -7,6 +11,11 @@ export interface UserSettings {
   show_signature: boolean;
   signature_name: string;
   design_template: DesignTemplate;
+  cover_alignment: CoverAlignment;
+  signature_position: SignaturePosition;
+  content_style: ContentStyle;
+  show_slide_numbers: boolean;
+  content_alignment: ContentAlignment;
   end_page_title: string;
   end_page_subtitle: string;
   end_page_cta: string;
@@ -21,6 +30,11 @@ export interface SettingsFormData {
   show_signature: boolean;
   signature_name: string;
   design_template: DesignTemplate;
+  cover_alignment: CoverAlignment;
+  signature_position: SignaturePosition;
+  content_style: ContentStyle;
+  show_slide_numbers: boolean;
+  content_alignment: ContentAlignment;
   end_page_title: string;
   end_page_subtitle: string;
   end_page_cta: string;
