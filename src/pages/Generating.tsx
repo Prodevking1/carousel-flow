@@ -11,6 +11,7 @@ interface LocationState {
   language: 'fr' | 'en';
   contentFormat: 'bullets' | 'paragraph';
   contentLength: 'short' | 'medium' | 'long' | 'auto';
+  contentStyle: 'split' | 'unified';
 }
 
 const stages = [
@@ -51,6 +52,7 @@ export default function Generating() {
         state.language,
         state.contentFormat,
         state.contentLength || 'auto',
+        state.contentStyle || 'split',
         state.sources,
         (prog, message) => {
           setProgress(prog);

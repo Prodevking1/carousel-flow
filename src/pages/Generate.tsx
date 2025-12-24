@@ -67,7 +67,7 @@ export default function Generate() {
     }
 
     navigate('/generating', {
-      state: { subject: subject.trim(), sources: sources.trim(), slideCount: finalSlideCount, language, contentFormat, contentLength }
+      state: { subject: subject.trim(), sources: sources.trim(), slideCount: finalSlideCount, language, contentFormat, contentLength, contentStyle }
     });
   };
 

@@ -116,6 +116,7 @@ export async function generateCarouselContent(
   language: string,
   contentFormat: string,
   contentLength: string,
+  contentStyle: string,
   sources?: string,
   onProgress?: (progress: number, message: string) => void
 ): Promise<GeneratedContent> {
@@ -232,6 +233,38 @@ IMPORTANT: Return ONLY valid JSON, no markdown, no explanations.`;
       console.warn(`Expected ${slideCount - 1} slides, got ${result.slides.length}`);
     }
 
+    // Transform slides if split style is selected
+    if (contentStyle === 'split') {
+      const transformedSlides: any[] = [];
+      let slideNumber = 1;
+
+      for (const slide of result.slides) {
+        if (slide.type === 'content') {
+          transformedSlides.push({
+            slide_number: slideNumber++,
+            type: 'title' as any,
+            title: slide.title,
+            stats: slide.stats,
+            is_edited: false
+          });
+
+          transformedSlides.push({
+            slide_number: slideNumber++,
+            type: 'content',
+            content: slide.content || slide.bullets?.join('\n\n') || '',
+            is_edited: false
+          });
+        } else {
+          transformedSlides.push({
+            ...slide,
+            slide_number: slideNumber++
+          });
+        }
+      }
+
+      result.slides = transformedSlides;
+    }
+
     // Add subscribe slide at the end
     const finalSlideNumber = result.slides.length + 1;
     result.slides.push({
@@ -250,7 +283,7 @@ IMPORTANT: Return ONLY valid JSON, no markdown, no explanations.`;
 
   } catch (error) {
     console.error('Generation error:', error);
-    return generateFallbackContent(subject, slideCount, language, contentFormat, contentLength, sources);
+    return generateFallbackContent(subject, slideCount, language, contentFormat, contentLength, contentStyle, sources);
   }
 }
 
@@ -260,6 +293,7 @@ function generateFallbackContent(
   language: string,
   contentFormat: string,
   contentLength: string,
+  contentStyle: string,
   sources?: string
 ): GeneratedContent {
   const slides: Omit<Slide, 'id' | 'carousel_id' | 'created_at' | 'updated_at'>[] = [

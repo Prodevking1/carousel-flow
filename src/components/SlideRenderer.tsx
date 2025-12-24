@@ -55,40 +55,39 @@ function CoverSlide({ slide, settings }: { slide: Slide; settings: UserSettings 
   );
 }
 
+function TitleSlide({ slide, totalSlides, settings }: { slide: Slide; totalSlides: number; settings: UserSettings }) {
+  return (
+    <div className="w-full h-full bg-white flex items-center justify-center p-12" style={{ backgroundColor: settings.primary_color }}>
+      <div className="w-full">
+        <h2 className="text-4xl font-bold text-white leading-tight">
+          {slide.title}
+        </h2>
+        {slide.stats && (
+          <p className="text-2xl text-white/80 mt-4">
+            {slide.stats}
+          </p>
+        )}
+        {settings.show_slide_numbers && (
+          <div className="text-white/80 text-xl mt-4">
+            {slide.slide_number} / {totalSlides}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ContentSlide({ slide, totalSlides, settings }: { slide: Slide; totalSlides: number; settings: UserSettings }) {
   const contentAlignment = settings.content_alignment === 'centered' ? 'items-center text-center' : 'items-start text-left';
-
-  if (settings.content_style === 'split') {
-    return (
-      <div className="w-full h-full flex flex-col">
-        <div className="flex-1 bg-white flex items-center justify-center p-12" style={{ backgroundColor: settings.primary_color }}>
-          <div className="w-full">
-            <h2 className="text-4xl font-bold text-white leading-tight">
-              {slide.title}
-            </h2>
-            {settings.show_slide_numbers && (
-              <div className="text-white/80 text-xl mt-4">
-                {slide.slide_number} / {totalSlides}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex-1 bg-white flex items-center p-12">
-          <div className="w-full text-gray-800 text-lg leading-relaxed space-y-4">
-            {parseMarkdown(slide.content)}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full h-full bg-white flex flex-col justify-center p-12">
       <div className={`flex flex-col ${contentAlignment}`}>
-        <h2 className="text-4xl font-bold mb-6 leading-tight" style={{ color: settings.primary_color }}>
-          {slide.title}
-        </h2>
+        {slide.title && (
+          <h2 className="text-4xl font-bold mb-6 leading-tight" style={{ color: settings.primary_color }}>
+            {slide.title}
+          </h2>
+        )}
         <div className="text-gray-800 text-lg leading-relaxed space-y-4">
           {parseMarkdown(slide.content)}
         </div>
@@ -150,6 +149,8 @@ export default function SlideRenderer({ slide, totalSlides, settings = DEFAULT_S
 
   if (slide.type === 'cover') {
     slideContent = <CoverSlide slide={slide} settings={settings} />;
+  } else if (slide.type === 'title') {
+    slideContent = <TitleSlide slide={slide} totalSlides={totalSlides} settings={settings} />;
   } else if (slide.type === 'cta') {
     slideContent = <CTASlide slide={slide} settings={settings} />;
   } else if (slide.type === 'subscribe') {

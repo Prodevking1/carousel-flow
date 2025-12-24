@@ -1,5 +1,5 @@
 export type CarouselStatus = 'draft' | 'exported';
-export type SlideType = 'cover' | 'content' | 'cta' | 'subscribe';
+export type SlideType = 'cover' | 'content' | 'cta' | 'subscribe' | 'title';
 export type CarouselLanguage = 'fr' | 'en';
 export type ContentFormat = 'bullets' | 'paragraph';
 export type ContentLength = 'short' | 'medium' | 'long' | 'auto';
