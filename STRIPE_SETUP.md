@@ -4,7 +4,7 @@ This application now includes a payment system for lifetime access. Here's how t
 
 ## Pricing Structure
 
-- **Early Bird Special**: $34 lifetime (first 50 customers)
+- **Early Bird Special**: $24 lifetime (first 50 customers)
 - **After Early Birds**: $12/month subscription
 
 ## Setup Instructions
@@ -72,8 +72,8 @@ The following tables were created:
 - **subscription_config**: Global configuration
   - `early_bird_limit`: Number of early bird spots (50)
   - `early_bird_count`: Current count
-  - `early_bird_price`: Price in cents (3400 = $34)
-  - `lifetime_price`: Regular lifetime price
+  - `early_bird_price`: Price in cents (2400 = $24)
+  - `lifetime_price`: Regular lifetime price (2400 = $24)
   - `monthly_price`: Monthly price (1200 = $12)
 
 ## How It Works
