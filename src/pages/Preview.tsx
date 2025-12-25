@@ -7,10 +7,12 @@ import { UserSettings } from '../types/settings';
 import SlideRenderer from '../components/SlideRenderer';
 import EditSlideModal from '../components/EditSlideModal';
 import RegenerateModal from '../components/RegenerateModal';
+import { PaymentModal } from '../components/PaymentModal';
 import { exportToPDF } from '../services/pdf';
 import { getOrCreateUserSettings } from '../services/settings';
 import { getCurrentUserId } from '../services/user';
 import { regenerateSlide } from '../services/ai';
+import { hasActiveSubscription } from '../services/subscription';
 
 export default function Preview() {
   const { id } = useParams();
@@ -24,6 +26,7 @@ export default function Preview() {
   const [exporting, setExporting] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [showRegenerateModal, setShowRegenerateModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -144,6 +147,14 @@ export default function Preview() {
 
   const handleExport = async () => {
     if (!carousel || slides.length === 0) return;
+
+    const userId = getCurrentUserId();
+    const hasSubscription = await hasActiveSubscription(userId);
+
+    if (!hasSubscription) {
+      setShowPaymentModal(true);
+      return;
+    }
 
     setExporting(true);
     try {
@@ -350,6 +361,11 @@ export default function Preview() {
           isRegenerating={regenerating}
         />
       )}
+
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+      />
     </div>
   );
 }
