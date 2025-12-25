@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { X, CreditCard, Sparkles, Check, Loader2 } from 'lucide-react';
-import { getSubscriptionConfig, getCurrentPrice, getSpotsRemaining, SubscriptionConfig } from '../services/subscription';
+import { useState } from 'react';
+import { X, CreditCard, Check, Loader2 } from 'lucide-react';
 import { getCurrentUserId } from '../services/user';
 
 interface PaymentModalProps {
@@ -10,19 +9,7 @@ interface PaymentModalProps {
 
 export function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
   const [loading, setLoading] = useState(false);
-  const [config, setConfig] = useState<SubscriptionConfig | null>(null);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (isOpen) {
-      loadConfig();
-    }
-  }, [isOpen]);
-
-  const loadConfig = async () => {
-    const data = await getSubscriptionConfig();
-    setConfig(data);
-  };
 
   const handleUpgrade = async () => {
     try {
@@ -54,12 +41,7 @@ export function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
     }
   };
 
-  if (!isOpen || !config) return null;
-
-  const price = getCurrentPrice(config);
-  const spotsRemaining = getSpotsRemaining(config);
-  const isEarlyBird = spotsRemaining > 0;
-  const displayPrice = (price.amount / 100).toFixed(0);
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -75,30 +57,13 @@ export function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
         </div>
 
         <div className="p-6 space-y-6">
-          {isEarlyBird && (
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles size={20} />
-                <span className="font-bold">Early Bird Special</span>
-              </div>
-              <p className="text-sm">
-                Only {spotsRemaining} spot{spotsRemaining !== 1 ? 's' : ''} remaining at this price!
-              </p>
-            </div>
-          )}
-
           <div className="text-center py-6">
             <div className="mb-2">
-              <span className="text-5xl font-bold text-gray-900">${displayPrice}</span>
+              <span className="text-5xl font-bold text-gray-900">$24</span>
             </div>
-            <div className="text-gray-600 mb-1">
-              {isEarlyBird ? 'Early Bird - Lifetime Access' : 'Lifetime Access'}
+            <div className="text-gray-600">
+              Lifetime Access
             </div>
-            {!isEarlyBird && (
-              <div className="text-sm text-gray-500">
-                After 50 early birds: $12/month
-              </div>
-            )}
           </div>
 
           <div className="space-y-3">

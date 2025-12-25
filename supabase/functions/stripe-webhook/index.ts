@@ -77,16 +77,6 @@ Deno.serve(async (req: Request) => {
         throw subError;
       }
 
-      if (subscriptionType === "lifetime_early") {
-        const { error: configError } = await supabase.rpc(
-          "increment_early_bird_count"
-        );
-
-        if (configError) {
-          console.error("Error incrementing early bird count:", configError);
-        }
-      }
-
       console.log(`Subscription activated for user ${userId}`);
     }
 

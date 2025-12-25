@@ -33,17 +33,14 @@ Deno.serve(async (req: Request) => {
 
     const { data: config } = await supabase
       .from("subscription_config")
-      .select("*")
+      .select("lifetime_price")
       .single();
 
     if (!config) {
       throw new Error("Config not found");
     }
 
-    const isEarlyBird = config.early_bird_count < config.early_bird_limit;
-    const amount = isEarlyBird ? config.early_bird_price : config.lifetime_price;
-    const subscriptionType = isEarlyBird ? "lifetime_early" : "lifetime";
-
+    const amount = config.lifetime_price;
     const origin = req.headers.get("origin") || "http://localhost:5173";
 
     const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
@@ -55,12 +52,8 @@ Deno.serve(async (req: Request) => {
       body: new URLSearchParams({
         "payment_method_types[0]": "card",
         "line_items[0][price_data][currency]": "usd",
-        "line_items[0][price_data][product_data][name]": isEarlyBird
-          ? "Carousel Generator - Lifetime Access (Early Bird)"
-          : "Carousel Generator - Lifetime Access",
-        "line_items[0][price_data][product_data][description]": isEarlyBird
-          ? `Limited offer - Only ${config.early_bird_limit - config.early_bird_count} spots remaining!`
-          : "Unlimited carousel generation and exports",
+        "line_items[0][price_data][product_data][name]": "Carousel Generator - Lifetime Access",
+        "line_items[0][price_data][product_data][description]": "Unlimited carousel generation and exports",
         "line_items[0][price_data][unit_amount]": amount.toString(),
         "line_items[0][quantity]": "1",
         "mode": "payment",
@@ -68,7 +61,7 @@ Deno.serve(async (req: Request) => {
         "cancel_url": `${origin}/preview/{CHECKOUT_SESSION_ID}?canceled=true`,
         "client_reference_id": userId,
         "metadata[user_id]": userId,
-        "metadata[subscription_type]": subscriptionType,
+        "metadata[subscription_type]": "lifetime",
       }),
     });
 

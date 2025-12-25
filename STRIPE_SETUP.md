@@ -4,8 +4,7 @@ This application now includes a payment system for lifetime access. Here's how t
 
 ## Pricing Structure
 
-- **Early Bird Special**: $24 lifetime (first 50 customers)
-- **After Early Birds**: $12/month subscription
+- **Lifetime Access**: $24 one-time payment
 
 ## Setup Instructions
 
@@ -64,23 +63,19 @@ The following tables were created:
 - **subscriptions**: Tracks user subscriptions
   - `user_id`: Anonymous user ID
   - `status`: 'active' or 'inactive'
-  - `subscription_type`: 'lifetime_early', 'lifetime', or 'monthly'
+  - `subscription_type`: 'lifetime'
   - `amount_paid`: Amount in cents
   - `stripe_customer_id`: Stripe customer ID
   - `stripe_payment_intent_id`: Payment intent ID
 
 - **subscription_config**: Global configuration
-  - `early_bird_limit`: Number of early bird spots (50)
-  - `early_bird_count`: Current count
-  - `early_bird_price`: Price in cents (2400 = $24)
-  - `lifetime_price`: Regular lifetime price (2400 = $24)
-  - `monthly_price`: Monthly price (1200 = $12)
+  - `lifetime_price`: Lifetime price in cents (2400 = $24)
 
 ## How It Works
 
 1. User creates a carousel and tries to export
 2. System checks if user has active subscription
-3. If not, displays payment modal with current pricing
+3. If not, displays payment modal showing $24 lifetime access
 4. User clicks "Get Lifetime Access"
 5. Redirected to Stripe Checkout
 6. After successful payment, webhook updates subscription status
