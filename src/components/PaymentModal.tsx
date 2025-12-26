@@ -16,8 +16,8 @@ export function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
       setLoading(true);
       setError('');
 
-      const userId = getCurrentUserId();
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`;
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`;
+      const origin = window.location.origin;
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -25,7 +25,12 @@ export function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify({ userId })
+        body: JSON.stringify({
+          price_id: 'price_1SiRh5B20OYBkvevNb5dkCwL',
+          mode: 'payment',
+          success_url: `${origin}/dashboard?payment=success`,
+          cancel_url: `${origin}/dashboard?payment=cancelled`
+        })
       });
 
       if (!response.ok) {

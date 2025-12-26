@@ -1,16 +1,35 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Download, Eye, Settings } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Plus, Trash2, Download, Eye, Settings, CheckCircle, XCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Carousel } from '../types/carousel';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [carousels, setCarousels] = useState<Carousel[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
   useEffect(() => {
     loadData();
+
+    const paymentStatus = searchParams.get('payment');
+    if (paymentStatus === 'success') {
+      setNotification({
+        type: 'success',
+        message: 'Payment successful! You now have lifetime access.'
+      });
+      setSearchParams({});
+      setTimeout(() => setNotification(null), 5000);
+    } else if (paymentStatus === 'cancelled') {
+      setNotification({
+        type: 'error',
+        message: 'Payment was cancelled.'
+      });
+      setSearchParams({});
+      setTimeout(() => setNotification(null), 5000);
+    }
   }, []);
 
   const loadData = async () => {
@@ -72,6 +91,20 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {notification && (
+          <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+            notification.type === 'success'
+              ? 'bg-green-50 border border-green-200 text-green-800'
+              : 'bg-red-50 border border-red-200 text-red-800'
+          }`}>
+            {notification.type === 'success' ? (
+              <CheckCircle size={20} className="flex-shrink-0" />
+            ) : (
+              <XCircle size={20} className="flex-shrink-0" />
+            )}
+            <span className="font-medium">{notification.message}</span>
+          </div>
+        )}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Carousels</h1>
