@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Download, Eye, Settings } from 'lucide-react';
+import { Plus, Trash2, Download, Eye, Settings, Zap, Clock, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Carousel } from '../types/carousel';
 
@@ -8,6 +8,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [carousels, setCarousels] = useState<Carousel[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showFomoBanner, setShowFomoBanner] = useState(true);
 
   useEffect(() => {
     loadCarousels();
@@ -94,6 +95,51 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {showFomoBanner && (
+          <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-lg shadow-lg p-6 mb-8 overflow-hidden">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <button
+              onClick={() => setShowFomoBanner(false)}
+              className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors z-10"
+            >
+              <X size={20} />
+            </button>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex-1 min-w-[300px]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap size={24} className="text-yellow-300" />
+                    <span className="bg-yellow-300 text-gray-900 text-xs font-bold px-2 py-1 rounded-full uppercase">
+                      Limited Offer
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Unlock Premium for only $24
+                  </h3>
+                  <p className="text-white/90 text-sm mb-3">
+                    Get unlimited carousels, advanced customization, and priority support
+                  </p>
+                  <div className="flex items-center gap-2 text-white/95">
+                    <Clock size={16} />
+                    <span className="text-sm font-semibold">Offer expires soon</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => navigate('/settings')}
+                    className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-bold text-lg transition-colors shadow-lg"
+                  >
+                    Claim Offer Now
+                  </button>
+                  <p className="text-white/80 text-xs text-center">
+                    One-time payment • Lifetime access
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {carousels.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
