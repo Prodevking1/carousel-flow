@@ -3,30 +3,53 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Download, Eye, Settings, Zap, Clock, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Carousel } from '../types/carousel';
+import { hasActiveSubscription } from '../services/subscription';
+import { getOrCreateUserSettings, updateUserSettings } from '../services/settings';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [carousels, setCarousels] = useState<Carousel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showFomoBanner, setShowFomoBanner] = useState(true);
+  const [showFomoBanner, setShowFomoBanner] = useState(false);
+  const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {
-    loadCarousels();
+    loadData();
   }, []);
 
-  const loadCarousels = async () => {
+  const loadData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('carousels')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const { data: { user } } = await supabase.auth.getUser();
+      const uid = user?.id || 'anonymous';
+      setUserId(uid);
 
-      if (error) throw error;
-      setCarousels(data || []);
+      const [carouselsData, hasSubscription, settings] = await Promise.all([
+        supabase
+          .from('carousels')
+          .select('*')
+          .order('created_at', { ascending: false }),
+        hasActiveSubscription(uid),
+        getOrCreateUserSettings(uid)
+      ]);
+
+      if (carouselsData.error) throw carouselsData.error;
+      setCarousels(carouselsData.data || []);
+
+      setShowFomoBanner(!hasSubscription && settings.show_premium_banner);
     } catch (error) {
-      console.error('Error loading carousels:', error);
+      console.error('Error loading data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const dismissBanner = async () => {
+    try {
+      await updateUserSettings(userId, { show_premium_banner: false });
+      setShowFomoBanner(false);
+    } catch (error) {
+      console.error('Error dismissing banner:', error);
+      setShowFomoBanner(false);
     }
   };
 
@@ -100,7 +123,7 @@ export default function Dashboard() {
           <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
             <div className="absolute inset-0 bg-black/10"></div>
             <button
-              onClick={() => setShowFomoBanner(false)}
+              onClick={dismissBanner}
               className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors z-10"
             >
               <X size={18} />

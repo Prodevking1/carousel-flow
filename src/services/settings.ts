@@ -33,7 +33,8 @@ export async function getOrCreateUserSettings(userId: string): Promise<UserSetti
       end_page_subtitle: 'Follow me for more content',
       end_page_cta: 'Follow for more content',
       end_page_contact: '',
-      end_page_image: ''
+      end_page_image: '',
+      show_premium_banner: true
     }, {
       onConflict: 'user_id',
       ignoreDuplicates: false

@@ -19,6 +19,7 @@ export interface UserSettings {
   end_page_cta: string;
   end_page_contact: string;
   end_page_image?: string;
+  show_premium_banner: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -37,4 +38,5 @@ export interface SettingsFormData {
   end_page_cta: string;
   end_page_contact: string;
   end_page_image?: string;
+  show_premium_banner: boolean;
 }

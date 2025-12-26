@@ -31,7 +31,8 @@ export default function Settings() {
     end_page_subtitle: 'Follow me for more content',
     end_page_cta: 'Follow for more content',
     end_page_contact: '',
-    end_page_image: ''
+    end_page_image: '',
+    show_premium_banner: true
   });
 
   useEffect(() => {
@@ -55,7 +56,8 @@ export default function Settings() {
         end_page_subtitle: settings.end_page_subtitle,
         end_page_cta: settings.end_page_cta,
         end_page_contact: settings.end_page_contact,
-        end_page_image: settings.end_page_image || ''
+        end_page_image: settings.end_page_image || '',
+        show_premium_banner: settings.show_premium_banner
       });
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -211,6 +213,24 @@ export default function Settings() {
                 onCustomize={() => setCustomizeModalOpen('end')}
               />
             </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Notifications</h2>
+            <p className="text-sm text-gray-600 mb-6">Manage your banner and notification preferences</p>
+
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.show_premium_banner}
+                onChange={(e) => setFormData({ ...formData, show_premium_banner: e.target.checked })}
+                className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-2 focus:ring-gray-900"
+              />
+              <div className="flex-1">
+                <div className="text-sm font-medium text-gray-900">Show Premium Offer Banner</div>
+                <div className="text-xs text-gray-500">Display the premium upgrade banner on the dashboard</div>
+              </div>
+            </label>
           </div>
         </div>
       </div>
