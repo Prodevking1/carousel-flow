@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, Loader2 } from 'lucide-react';
 import { generateCarouselContent } from '../services/ai';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LocationState {
   subject: string;
@@ -25,6 +26,7 @@ const stages = [
 export default function Generating() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const state = location.state as LocationState;
 
   const [progress, setProgress] = useState(0);
@@ -45,6 +47,11 @@ export default function Generating() {
   }, []);
 
   const generateCarousel = async () => {
+    if (!user?.id) {
+      setError('You must be logged in to generate a carousel');
+      return;
+    }
+
     try {
       const content = await generateCarouselContent(
         state.subject,
@@ -70,7 +77,8 @@ export default function Generating() {
           language: state.language,
           content_format: state.contentFormat,
           hashtags: content.hashtags,
-          status: 'draft'
+          status: 'draft',
+          user_id: user.id
         })
         .select()
         .single();

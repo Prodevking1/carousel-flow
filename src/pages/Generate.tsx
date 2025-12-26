@@ -4,10 +4,11 @@ import { Sparkles, ArrowLeft, ChevronDown } from 'lucide-react';
 import { CarouselLanguage, SlideCount, ContentFormat, ContentLength } from '../types/carousel';
 import { ContentStyle } from '../types/settings';
 import { getOrCreateUserSettings } from '../services/settings';
-import { getCurrentUserId } from '../services/user';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Generate() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [subject, setSubject] = useState('');
   const [sources, setSources] = useState('');
   const [slideCount, setSlideCount] = useState<SlideCount>(5);
@@ -22,16 +23,16 @@ export default function Generate() {
 
   useEffect(() => {
     const loadSettings = async () => {
+      if (!user?.id) return;
       try {
-        const userId = getCurrentUserId();
-        const settings = await getOrCreateUserSettings(userId);
+        const settings = await getOrCreateUserSettings(user.id);
         setContentStyle(settings.content_style);
       } catch (error) {
         console.error('Error loading settings:', error);
       }
     };
     loadSettings();
-  }, []);
+  }, [user]);
 
   const languages = [
     { value: 'fr', label: 'Français', flag: '🇫🇷' },

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { X, CreditCard, Check, Loader2 } from 'lucide-react';
-import { getCurrentUserId } from '../services/user';
 
 interface PaymentModalProps {
   isOpen: boolean;

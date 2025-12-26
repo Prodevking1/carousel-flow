@@ -10,13 +10,14 @@ import RegenerateModal from '../components/RegenerateModal';
 import { PaymentModal } from '../components/PaymentModal';
 import { exportToPDF } from '../services/pdf';
 import { getOrCreateUserSettings } from '../services/settings';
-import { getCurrentUserId } from '../services/user';
+import { useAuth } from '../contexts/AuthContext';
 import { regenerateSlide } from '../services/ai';
 import { hasActiveSubscription } from '../services/subscription';
 
 export default function Preview() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [carousel, setCarousel] = useState<Carousel | null>(null);
   const [slides, setSlides] = useState<Slide[]>([]);
   const [settings, setSettings] = useState<UserSettings | null>(null);
@@ -49,6 +50,7 @@ export default function Preview() {
   }, [currentSlideIndex, slides.length]);
 
   const loadCarousel = async () => {
+    if (!user?.id) return;
     try {
       const { data: carouselData, error: carouselError } = await supabase
         .from('carousels')
@@ -66,7 +68,7 @@ export default function Preview() {
 
       if (slidesError) throw slidesError;
 
-      const userSettings = await getOrCreateUserSettings(getCurrentUserId());
+      const userSettings = await getOrCreateUserSettings(user.id);
 
       setCarousel(carouselData);
       setSlides(slidesData || []);
@@ -146,10 +148,9 @@ export default function Preview() {
   };
 
   const handleExport = async () => {
-    if (!carousel || slides.length === 0) return;
+    if (!carousel || slides.length === 0 || !user?.id) return;
 
-    const userId = getCurrentUserId();
-    const hasSubscription = await hasActiveSubscription(userId);
+    const hasSubscription = await hasActiveSubscription(user.id);
 
     if (!hasSubscription) {
       setShowPaymentModal(true);

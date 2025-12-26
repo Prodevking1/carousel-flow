@@ -5,12 +5,13 @@ import { hasActiveSubscription } from '../services/subscription';
 import { PaymentModal } from '../components/PaymentModal';
 import { getOrCreateUserSettings, updateUserSettings } from '../services/settings';
 import { SettingsFormData, CoverAlignment, SignaturePosition, ContentStyle, ContentAlignment } from '../types/settings';
-import { getCurrentUserId } from '../services/user';
+import { useAuth } from '../contexts/AuthContext';
 import { CustomizeModal } from '../components/CustomizeModal';
 import { PreviewCard } from '../components/PreviewCard';
 
 export default function Settings() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [customizeModalOpen, setCustomizeModalOpen] = useState<'cover' | 'content' | 'end' | null>(null);
@@ -39,12 +40,12 @@ export default function Settings() {
   }, []);
 
   const loadSettings = async () => {
+    if (!user?.id) return;
     try {
       setLoading(true);
-      const userId = getCurrentUserId();
       const [settings, premium] = await Promise.all([
-        getOrCreateUserSettings(userId),
-        hasActiveSubscription(userId)
+        getOrCreateUserSettings(user.id),
+        hasActiveSubscription(user.id)
       ]);
 
       setIsPremium(premium);
@@ -72,9 +73,10 @@ export default function Settings() {
   };
 
   const handleSave = async () => {
+    if (!user?.id) return;
     try {
       setSaving(true);
-      await updateUserSettings(getCurrentUserId(), formData);
+      await updateUserSettings(user.id, formData);
       navigate('/');
     } catch (error) {
       console.error('Error saving settings:', error);

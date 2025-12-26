@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Plus, Trash2, Download, Eye, Settings, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Trash2, Download, Eye, Settings, CheckCircle, XCircle, LogOut } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import { Carousel } from '../types/carousel';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { signOut, user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [carousels, setCarousels] = useState<Carousel[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,7 @@ export default function Dashboard() {
       const carouselsData = await supabase
         .from('carousels')
         .select('*')
+        .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
       if (carouselsData.error) throw carouselsData.error;
@@ -46,6 +49,11 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login');
   };
 
   const deleteCarousel = async (id: string) => {
@@ -111,6 +119,13 @@ export default function Dashboard() {
             <p className="text-gray-600 mt-1">Create and manage your LinkedIn carousels</p>
           </div>
           <div className="flex gap-3">
+            <button
+              onClick={handleSignOut}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors"
+            >
+              <LogOut size={20} />
+              Logout
+            </button>
             <button
               onClick={() => navigate('/settings')}
               className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors"
