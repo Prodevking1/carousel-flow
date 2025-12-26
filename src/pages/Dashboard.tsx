@@ -97,38 +97,38 @@ export default function Dashboard() {
         </div>
 
         {showFomoBanner && (
-          <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-lg shadow-lg p-6 mb-8 overflow-hidden">
+          <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
             <div className="absolute inset-0 bg-black/10"></div>
             <button
               onClick={() => setShowFomoBanner(false)}
-              className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors z-10"
+              className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors z-10"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
             <div className="relative z-10">
-              <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex-1 min-w-[300px]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Zap size={24} className="text-yellow-300" />
-                    <span className="bg-yellow-300 text-gray-900 text-xs font-bold px-2 py-1 rounded-full uppercase">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap size={20} className="text-yellow-300" />
+                    <span className="bg-yellow-300 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">
                       Limited Offer
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
+                  <h3 className="text-xl font-bold text-white mb-1">
                     Unlock Premium for only $24
                   </h3>
-                  <p className="text-white/90 text-sm mb-3">
+                  <p className="text-white/90 text-xs mb-1">
                     Get unlimited carousels, advanced customization, and priority support
                   </p>
-                  <div className="flex items-center gap-2 text-white/95">
-                    <Clock size={16} />
-                    <span className="text-sm font-semibold">Offer expires soon</span>
+                  <div className="flex items-center gap-1.5 text-white/95">
+                    <Clock size={14} />
+                    <span className="text-xs font-semibold">Offer expires soon</span>
                   </div>
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                   <button
                     onClick={() => navigate('/settings')}
-                    className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-bold text-lg transition-colors shadow-lg"
+                    className="bg-white hover:bg-gray-100 text-gray-900 px-6 py-2.5 rounded-lg font-bold transition-colors shadow-lg whitespace-nowrap"
                   >
                     Claim Offer Now
                   </button>
