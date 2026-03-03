@@ -26,32 +26,32 @@ Deno.serve(async (req: Request) => {
 
     console.log('Received request for:', subject);
 
-    const anthropicApiKey = Deno.env.get("ANTHROPIC_API_KEY");
-    if (!anthropicApiKey) {
-      console.error('Anthropic API key not found in environment');
-      throw new Error("Anthropic API key not configured");
+    const openrouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
+    if (!openrouterApiKey) {
+      console.error('OpenRouter API key not found in environment');
+      throw new Error("OpenRouter API key not configured");
     }
 
-    console.log('Calling Anthropic API...');
+    console.log('Calling OpenRouter API...');
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": anthropicApiKey,
-        "anthropic-version": "2023-06-01"
+        "Authorization": `Bearer ${openrouterApiKey}`,
+        "HTTP-Referer": "https://carousel-generator.app",
+        "X-Title": "Carousel Generator"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 16000,
-        thinking: {
-          type: "enabled",
-          budget_tokens: 10000
-        },
+        model: "anthropic/claude-3.5-sonnet",
         messages: [
           {
+            role: "system",
+            content: systemPrompt
+          },
+          {
             role: "user",
-            content: `${systemPrompt}\n\n${userPrompt}\n\nSubject: ${subject}\nSlide count: ${slideCount}`
+            content: `${userPrompt}\n\nSubject: ${subject}\nSlide count: ${slideCount}`
           }
         ]
       })
@@ -59,20 +59,17 @@ Deno.serve(async (req: Request) => {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Anthropic API error:', error);
-      throw new Error(`Anthropic API error: ${response.status} - ${error}`);
+      console.error('OpenRouter API error:', error);
+      throw new Error(`OpenRouter API error: ${response.status} - ${error}`);
     }
 
     const data = await response.json();
 
-    // Filter out thinking blocks, only get text response
-    const textBlocks = data.content.filter((block: any) => block.type === 'text');
-    if (textBlocks.length === 0) {
-      throw new Error('No text content in response');
+    if (!data.choices || data.choices.length === 0) {
+      throw new Error('No response from OpenRouter API');
     }
 
-    // Combine all text blocks
-    const content = textBlocks.map((block: any) => block.text).join('\n');
+    const content = data.choices[0].message.content;
 
     console.log('Successfully generated content');
 
